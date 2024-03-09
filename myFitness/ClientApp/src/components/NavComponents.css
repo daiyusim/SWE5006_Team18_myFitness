@@ -1,0 +1,146 @@
+﻿
+
+header {
+    background: white;
+}
+
+.main-content {
+    background: #FFF;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 100vh;
+    padding-left: 25px;
+}
+
+.side-panel {
+    background-color: #000080;
+    width: 50px;
+    height: 100vh;
+}
+
+    .side-panel ul {
+        padding-left: 0px;
+        position: sticky;
+        top: 90px;
+        z-index: 999;
+    }
+
+        .side-panel ul li {
+            list-style-type: none;
+            font-size: 14px;
+            color: #FFF;
+            width: 100%;
+            padding: 10px;
+        }
+
+            .side-panel ul li a {
+                text-decoration: none;
+                color: #FFF;
+            }
+
+.icons-ref-size {
+    width: 70%;
+    height: 70%;
+}
+
+.item-display {
+    display: inline-block;
+    background-color: #000080;
+}
+
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+div.navbar-brand-2 {
+    width: 99%;
+    border: none;
+    text-transform: uppercase;
+    color: #FFF;
+    text-align: center;
+    transform: skewX(-18deg);
+    -moz-transform: skewX(-18deg);
+    -ms-transform: skewX(-18deg);
+    -webkit-transform: skewX(-18deg);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 75%;
+    background: linear-gradient(to right, #f84600 0%,#f84600 calc(50% - 475px),#23418b calc(50% - 475px),#23418b 100%);
+}
+
+
+
+div.navbar-brand-top {
+    width: 100%;
+    border: none;
+    background: #000080;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    padding-top: 15px;
+}
+
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+
+
+.menuIcon {
+    color: var(--neutral-icon-inverted, #FFF);
+    text-align: center;
+    font-feature-settings: 'clig' off, 'liga' off;
+    font-family: Font Awesome 6 Pro;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    width: 20px;
+    line-height: 24px;
+}
+
+.side-panel {
+    text-align: center;
+}
+
+.navbar-bottom {
+    width: 100%;
+    border: none;
+    color: white;
+    background: #000080 !important;
+    padding: 48px 32px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.header-name {
+    font-size: 100%;
+    color: #929DAF;
+    cursor: pointer;
+}
+
