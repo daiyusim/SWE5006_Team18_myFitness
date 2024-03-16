@@ -3,12 +3,14 @@ import { Link, TableSortLabel, Table, TableBody, TableFooter, TableContainer, Ta
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
-
+import { useLoading } from "../shared/LoadingContext";
 
 
 export const AttendanceMain = () => {
-        const [records, setRecords] = useState(null);
+    const [records, setRecords] = useState(null);
+    const { setLoading } = useLoading();
     useEffect(() => {
+        setLoading(true);
         fetch("api/event")
             .then(r => r.json())
             .then(res => {
@@ -20,7 +22,8 @@ export const AttendanceMain = () => {
                 }));
                 setRecords(events);
             })
-            .catch(e => console.log("Error fetching events", e));
+            .catch(e => console.log("Error fetching events", e))
+            .finally(() => setLoading(false));
     }, []);
 
     const handleEventClick = (eventInfo) => {
@@ -37,7 +40,7 @@ export const AttendanceMain = () => {
                     <Divider sx={{ padding: '0.5rem 0.75rem', marginBottom: '0.75rem' }} />
 
                 </Grid>
-                <Grid item md={12} sx={{ maxHeight: '750px', overflow: 'auto' }}>
+                <Grid item md={12} sx={{ maxHeight: '600px', overflow: 'auto' }}>
                     <FullCalendar
                         plugins={[dayGridPlugin, timeGridPlugin]}
                         initialView="dayGridMonth"
