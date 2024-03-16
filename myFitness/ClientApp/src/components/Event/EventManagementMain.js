@@ -7,17 +7,33 @@ import { useLocation, useParams, useNavigate } from "react-router-dom";
 import dayjs from 'dayjs';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useLoading } from "../shared/LoadingContext";
-
+import DeleteEvent  from "./DeleteEvent";
 export const EventManagementMain = () => {
     const navigate = useNavigate();
     const { setLoading } = useLoading();
-    const [selectedRow, setSelectedRow] = useState(null);
+    const [selectedRowId, setSelectedRowId] = useState(null);
+    const [selectedRowEventName, setSelectedRowEventName] = useState(null);
     const [events, setEvents] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
-    const [selectedCategory, setSelectedCategory] = useState('All'); 
+    const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
-    const handleClick = (event) => {
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const handleClick = (event, eventId, eventName) => {
+        setSelectedRowId(eventId);
+        setSelectedRowEventName(eventName);
         setAnchorEl(event.currentTarget);
+    };
+    const handleShowDeleteDialog = () => {
+        setShowDeleteDialog(true);
+
+    };
+
+    const handleCloseDeleteDialog = () => {
+        setShowDeleteDialog(false);
+        setSelectedRowId(null)
+        setSelectedRowEventName(null)
+        handleClose();
+        fetchEvents();
     };
     const handleSearch = (event) => {
         setSearchQuery(event.target.value);
@@ -25,7 +41,7 @@ export const EventManagementMain = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    useEffect(() => {
+    const fetchEvents = () => {
         setLoading(true);
         fetch("api/event")
             .then(r => r.json())
@@ -40,6 +56,11 @@ export const EventManagementMain = () => {
             })
             .catch(e => console.log("Error fetching events", e))
             .finally(() => setLoading(false));
+    };
+
+    useEffect(() => {
+        setLoading(true);
+        fetchEvents();
     }, []);
 
     const handleAddEvent = () => {
@@ -47,7 +68,7 @@ export const EventManagementMain = () => {
     }
 
     const handleEditEvent = () => {
-        navigate(BaseRoutes.Event + "/" + selectedRow.eventID, { state: { isAdd: false } });
+        navigate(BaseRoutes.Event + "/" + selectedRowId, { state: { isAdd: false } });
     }
     const AddBtnStyle = {
         fontSize: '1rem',
@@ -62,58 +83,58 @@ export const EventManagementMain = () => {
     return (
         <Box sx={{ marginTop: '1rem', maxHeight: '600px', overflow: 'auto' }}>
             <Grid container>
-                <Typography variant="h6" sx={{ fontWeight: 'bold', marginRight: '0.5rem', fontSize: '1.5rem' }}>All events</Typography>
-                <Button variant="contained" sx={AddBtnStyle} onClick={handleAddEvent}>
-                    <AddIcon />
-                </Button>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', marginRight: '0.5rem', fontSize: '1.5rem' }}>All events</Typography>
+            <Button variant="contained" sx={AddBtnStyle} onClick={handleAddEvent}>
+                <AddIcon />
+            </Button>
+        </Grid>
+
+        <br />
+        <Grid container spacing={2} alignItems="center">
+            <Grid item>
+                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Search by Title:</Typography>
             </Grid>
-           
-            <br />
-            <Grid container spacing={2} alignItems="center">
-                <Grid item>
-                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Search by Title:</Typography>
-                </Grid>
-                <Grid item>
-                    <TextField
-                        variant="outlined"
-                        value={searchQuery}
-                        onChange={handleSearch}
-                    />
-                </Grid>
-                <Grid item>
-                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Filter by Category:</Typography>
-                </Grid>
-                <Grid item>
-                    <Select
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                        variant="outlined"
-                        fullWidth
-                        sx={{ marginBottom: '1rem' }}
+            <Grid item>
+                <TextField
+                    variant="outlined"
+                    value={searchQuery}
+                    onChange={handleSearch}
+                />
+            </Grid>
+            <Grid item>
+                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Filter by Category:</Typography>
+            </Grid>
+            <Grid item>
+                <Select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    variant="outlined"
+                    fullWidth
+                    sx={{ marginBottom: '1rem' }}
+                >
+                    <MenuItem value="All">All</MenuItem>
+                    <MenuItem value="Workout">Workout</MenuItem>
+                    <MenuItem value="Fitness">Fitness</MenuItem>
+                    <MenuItem value="Yoga">Yoga</MenuItem>
+                    <MenuItem value="Dance">Dance</MenuItem>
+                </Select>
+            </Grid>
+        </Grid>
+        <Grid container spacing={3}>
+            {filteredEvents && (filteredEvents.length === 0 ? (
+                <Grid item xs={12}>
+                    <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        height="100px"
                     >
-                        <MenuItem value="All">All</MenuItem>
-                        <MenuItem value="Workout">Workout</MenuItem>
-                        <MenuItem value="Fitness">Fitness</MenuItem>
-                        <MenuItem value="Yoga">Yoga</MenuItem>
-                        <MenuItem value="Dance">Dance</MenuItem>
-                    </Select>
+                        <Typography variant="body1" color="textSecondary">
+                            No records found
+                        </Typography>
+                    </Box>
                 </Grid>
-            </Grid>
-         <Grid container spacing={3}>
-                {filteredEvents && (filteredEvents.length === 0 ? (
-                    <Grid item xs={12}>
-                        <Box
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                            height="100px"
-                        >
-                            <Typography variant="body1" color="textSecondary">
-                                No records found
-                            </Typography>
-                        </Box>
-                    </Grid>
-                ) : (
+            ) : (
                 filteredEvents.map(event => (
                     <Grid item key={event.id} xs={12} sm={6} md={4}>
                         <Card>
@@ -130,7 +151,7 @@ export const EventManagementMain = () => {
                                 }
                                 subheader={`${event.startDateTime} - ${event.endDateTime}`}
                                 action={
-                                    <IconButton aria-label="more" aria-controls="event-menu" aria-haspopup="true" onClick={handleClick}>
+                                    <IconButton aria-label="more" aria-controls={`event-menu-${event.id}`} aria-haspopup="true" onClick={(e) => handleClick(e, event.id, event.title)}>
                                         <MoreVertIcon />
                                     </IconButton>
                                 }
@@ -162,13 +183,20 @@ export const EventManagementMain = () => {
                                 onClose={handleClose}
                             >
                                 <MenuItem onClick={handleClose}>Register</MenuItem>
+                                {/*                                set the user accessrights after that */}
+                                <MenuItem onClick={handleEditEvent}>Edit</MenuItem>
+                                <MenuItem onClick={handleShowDeleteDialog}>Delete</MenuItem>
                             </Menu>
                         </Card>
                     </Grid>
                 ))))}
-            </Grid>
+                        </Grid>
+               
+              
+            {showDeleteDialog && (<DeleteEvent open={showDeleteDialog} handleClose={handleCloseDeleteDialog} eventId={selectedRowId} eventName={selectedRowEventName} />)}
+    </Box>
+   
 
-        </Box>
     );
 }
 
