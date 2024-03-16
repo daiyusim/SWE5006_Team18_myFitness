@@ -1,5 +1,4 @@
-﻿
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace myFitness.Models
@@ -28,6 +27,15 @@ namespace myFitness.Models
 
         [BsonElement("totalRegistered")]
         public int TotalRegistered { get; set; }
+
+        [BsonElement("status")]
+        public string Status { get; set; }
+
+        [BsonElement("category")]
+        public string Category { get; set; }
+
+        [BsonElement("registrationEndDate")]
+        public DateTime RegistrationEndDate { get; set; }
 
         [BsonElement("isDeleted")]
         public bool IsDeleted { get; set; }
