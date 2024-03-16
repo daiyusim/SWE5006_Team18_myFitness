@@ -33,7 +33,10 @@ const EventForm = () => {
     return (
         <Grid>
             <form onSubmit={handleSubmit} encType="multipart/form-data">
-
+                <Grid container>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', marginRight: '0.5rem', fontSize: '1.5rem' }}>New event</Typography>
+    
+                </Grid>
             </form>
 
         </Grid>
