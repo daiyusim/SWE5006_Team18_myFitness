@@ -238,10 +238,14 @@ const EventForm = () => {
                             </FormControl>
                         </FormGroup>
                     </Grid>
-                    <Grid item xs={12} sx={{ textAlign: 'right' }}>
+                    <Grid item xs={12} sx={{ textAlign: 'right', mt: 2 }}>
+                        <Button variant="outlined" sx={{ mr: 2 }} onClick={handleClose}>
+                            Cancel
+                        </Button>
                         <Button type="submit" variant="contained" sx={StyleBtn}>
                             Submit
                         </Button>
+
                     </Grid>
                 </Grid>
             </form>

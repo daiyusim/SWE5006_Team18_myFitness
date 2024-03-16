@@ -69,7 +69,7 @@ namespace myFitness.Controllers
 
             await _eventServices.RemoveAsync(id);
 
-            return Ok("Deleted Successfully");
+            return Ok(new { message = "Deleted Successfully" });
         }
     }
 }
