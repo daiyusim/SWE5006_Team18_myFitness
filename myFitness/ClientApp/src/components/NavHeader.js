@@ -14,6 +14,7 @@ const NavHeader = () => {
             </AppBar>
             <div className="navbar-brand-top">
                 <div className="header-container">
+                    <span style={{ color: 'white', fontWeight: 'bold',fontSize: '22px',marginLeft:'2rem' }}>myFitness</span>
                 </div>
             </div>
         </header>
