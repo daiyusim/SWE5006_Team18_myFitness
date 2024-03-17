@@ -7,7 +7,15 @@ import { useLocation, useParams, useNavigate } from "react-router-dom";
 import dayjs from 'dayjs';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useLoading } from "../shared/LoadingContext";
-import DeleteEvent  from "./DeleteEvent";
+import DeleteEvent from "./DeleteEvent";
+
+const categoryColors = {
+    All: { backgroundColor: '#FFA500', color: 'white' },
+    Workout: { backgroundColor: '#FF5733', color: 'white' },
+    Fitness: { backgroundColor: '#36C7B0', color: 'white' },
+    Yoga: { backgroundColor: '#FFC300', color: 'black' },
+    Dance: { backgroundColor: '#900C3F', color: 'white' },
+};
 export const EventManagementMain = () => {
     const navigate = useNavigate();
     const { setLoading } = useLoading();
@@ -77,11 +85,15 @@ export const EventManagementMain = () => {
         backgroundColor: '#23418B',
         marginLeft: 'auto'
     }
+    const getCategoryColor = (category) => {
+        return categoryColors[category] || { backgroundColor: '#FFA500', color: 'white' };
+    };
+
     const filteredEvents = events && (events
         .filter(event => (selectedCategory === 'All' || event.category === selectedCategory))
         .filter(event => event.title.toLowerCase().includes(searchQuery.toLowerCase())));
     return (
-        <Box sx={{ marginTop: '1rem', maxHeight: '600px', overflow: 'auto' }}>
+        <Box sx={{ marginTop: '1rem' }}>
             <Grid container>
             <Typography variant="h6" sx={{ fontWeight: 'bold', marginRight: '0.5rem', fontSize: '1.5rem' }}>All events</Typography>
             <Button variant="contained" sx={AddBtnStyle} onClick={handleAddEvent}>
@@ -136,15 +148,24 @@ export const EventManagementMain = () => {
                 </Grid>
             ) : (
                 filteredEvents.map(event => (
-                    <Grid item key={event.id} xs={12} sm={6} md={4}>
-                        <Card>
+                    <Grid item key={event.id} xs={12} sm={6} md={4} style={{ minHeight: '200px' }}>
+                        <Card sx={{ borderRadius: "25px", backgroundColor: "white", height: "100%", boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)" }}>
                             <CardHeader
                                 title={
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <Typography variant="h5" component="h2">
+                                        <Typography variant="h5" component="h2" style={{ fontWeight: 'bold' }}>
                                             {event.title}
                                         </Typography>
-                                        <Typography variant="body2" component="span" style={{ marginLeft: '8px', backgroundColor: '#FFA500', color: 'white', padding: '4px', borderRadius: '4px' }}>
+                                        <Typography
+                                            variant="body2"
+                                            component="span"
+                                            style={{
+                                                marginLeft: '8px',
+                                                padding: '4px',
+                                                borderRadius: '4px',
+                                                ...getCategoryColor(event.category) // Set category color dynamically
+                                            }}
+                                        >
                                             {event.category}
                                         </Typography>
                                     </div>
@@ -156,7 +177,7 @@ export const EventManagementMain = () => {
                                     </IconButton>
                                 }
                             />
-                            <CardContent>
+                            <CardContent style={{ overflow: 'auto' }}>
                                 <Typography
                                     variant="body1"
                                     component="p"
@@ -183,12 +204,14 @@ export const EventManagementMain = () => {
                                 onClose={handleClose}
                             >
                                 <MenuItem onClick={handleClose}>Register</MenuItem>
-                                {/*                                set the user accessrights after that */}
+                                {/* set the user access rights after that */}
                                 <MenuItem onClick={handleEditEvent}>Edit</MenuItem>
                                 <MenuItem onClick={handleShowDeleteDialog}>Delete</MenuItem>
                             </Menu>
                         </Card>
                     </Grid>
+
+
                 ))))}
                         </Grid>
                
