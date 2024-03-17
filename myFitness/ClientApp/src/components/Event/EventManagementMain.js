@@ -193,7 +193,7 @@ export const EventManagementMain = () => {
                                     Registration Closing Date: {event.registrationEndDate}
                                 </Typography>
                                 <Typography variant="body1" component="p">
-                                    Capacity: {event.capacity}
+                                    Capacity: {event.capacity} 
                                 </Typography>
                             </CardContent>
                             <Menu
@@ -205,8 +205,8 @@ export const EventManagementMain = () => {
                             >
                                 <MenuItem onClick={handleClose}>Register</MenuItem>
                                 {/* set the user access rights after that */}
-                                <MenuItem onClick={handleEditEvent}>Edit</MenuItem>
-                                <MenuItem onClick={handleShowDeleteDialog}>Delete</MenuItem>
+                                {event.totalRegistered === 0 && (<MenuItem onClick={handleEditEvent}>Edit</MenuItem>)}
+                                {event.totalRegistered === 0 && (<MenuItem onClick={handleShowDeleteDialog}>Delete</MenuItem>)}
                             </Menu>
                         </Card>
                     </Grid>

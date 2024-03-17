@@ -1,4 +1,4 @@
-import { Box, Typography, Grid, Modal, Button, Container, IconButton, FormGroup, FormControl, InputLabel, Select, MenuItem, TextField } from '@mui/material'; 
+import { Box, Typography, Grid, Modal, Button, Container, IconButton, FormLabel,FormGroup, FormControl, InputLabel, Select, MenuItem, TextField } from '@mui/material'; 
 import CloseIcon from '@mui/icons-material/Close'; 
 import React, { useState, useEffect } from 'react'; 
 
@@ -12,7 +12,13 @@ const ProfileForm = ({ open, isEdit, handleClose, profileInfo }) => {
         gender: "",
         goal: [],
     }; 
-
+    const StyleBtn = {
+        fontSize: '1rem',
+        textTransform: 'none',
+        fontWeight: 'bold',
+        backgroundColor: '#23418B',
+        marginLeft: 'auto'
+    }
     const [profileData, setProfileData] = useState(initialProfileData); 
 
     const handleSubmit = (event) => { 
@@ -68,45 +74,55 @@ const ProfileForm = ({ open, isEdit, handleClose, profileInfo }) => {
                             paddingTop: '1rem', 
                             width: "670px", 
                         }}> 
+                          
                             <Grid container spacing={2}> 
+                           
                                 <Grid item md={6} xs={6} xl={6}> 
+                                    <FormGroup>
+                                        <FormControl fullWidth>
+                                            <FormLabel required>Height (cm)</FormLabel>
                                     <TextField 
                                         variant="outlined" 
                                         sx={sharedInputStyles} 
                                         id="height" 
                                         name="height" 
-                                        label="Height (cm)" 
                                         onChange={handleChange} 
                                         value={profileData.height} 
                                         type='number'
                                         required
-                                    /> 
+                                            />
+                                        </FormControl>
+                                    </FormGroup>
                                 </Grid> 
                                 <Grid item md={6} xs={6} xl={6}> 
+                                    <FormGroup>
+                                        <FormControl fullWidth>
+                                            <FormLabel required>Weight (kg)</FormLabel>
                                     <TextField 
                                         variant="outlined" 
                                         sx={sharedInputStyles} 
                                         id="weight" 
                                         name="weight" 
-                                        label="Weight (kg)" 
                                         onChange={handleChange} 
                                         value={profileData.weight} 
                                         type='number'
                                         required
                                     /> 
+                                        </FormControl>
+                                    </FormGroup>
                                 </Grid> 
-                                <Grid item md={12} xs={12}> 
+                                <Grid item md={6} xs={6} xl={6}> 
                                     <FormControl fullWidth variant="outlined" sx={sharedInputStyles}>
-                                        <InputLabel id="interest-label">Interest</InputLabel>
+                                        <FormLabel id="interest-label" required>Interest</FormLabel>
                                         <Select
-                                        sx={{width: '90%'}}
+                                        sx={{width: '100%'}}
                                             labelId="interest-label"
                                             id="interest"
                                             name="interest"
                                             multiple
                                             value={profileData.interest}
                                             onChange={handleChange}
-                                            label="Interest"
+                                            required
                                         >
                                             <MenuItem value="sports">Sports</MenuItem>
                                             <MenuItem value="music">Music</MenuItem>
@@ -114,27 +130,31 @@ const ProfileForm = ({ open, isEdit, handleClose, profileInfo }) => {
                                         </Select>
                                     </FormControl>
                                 </Grid> 
-                                <Grid item md={12}> 
+                                <Grid item md={6} xs={6} xl={6}> 
+                                    <FormGroup>
+                                        <FormControl fullWidth>
+                                            <FormLabel required>Goals</FormLabel>
                                     <TextField 
                                         variant="outlined" 
                                         sx={sharedInputStyles} 
                                         id="goal" 
                                         name="goal" 
-                                        label="Goals" 
                                         onChange={handleChange} 
                                         value={profileData.goal} 
                                         required
                                     /> 
-                                </Grid> 
+                                        </FormControl>
+                                    </FormGroup>
+                                </Grid>  
                             </Grid> 
                         </Grid> 
                     </Container> 
                     <Container > 
-                        <Grid item className="footer" style={{ marginTop: 'auto', padding: '1rem' }} container justifyContent="flex-end"> 
-                            <Button sx={{ textTransform: 'none', lineHeight: "24px", fontSize: "16px", fontWeight: "700", color: "#2E5CCC", borderColor: "#CFD5DF", }} variant="outlined" className="cancel-button" onClick={handleClose}> 
+                        <Grid item xs={12} sx={{ textAlign: 'right', mt: 2 }}>
+                            <Button sx={{ mr: 2, textTransform: 'none', lineHeight: "24px", fontSize: "16px", fontWeight: "700", color: "#2E5CCC", borderColor: "#CFD5DF", }} variant="outlined" className="cancel-button" onClick={handleClose}> 
                                 Cancel 
-                            </Button> 
-                            <Button type="submit" sx={{ textTransform: 'none', lineHeight: "24px", fontSize: "16px", fontWeight: "700", color: "#2E5CCC", borderColor: "#CFD5DF", }} variant="contained" className="add-button"> 
+                            </Button>
+                            <Button type="submit" sx={StyleBtn} variant="contained" className="add-button"> 
                                 {isEdit ? "Save" : "Add"}
                             </Button> 
                         </Grid> 

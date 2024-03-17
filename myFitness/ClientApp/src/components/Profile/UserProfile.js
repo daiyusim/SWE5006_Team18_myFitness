@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import EditIcon from "@mui/icons-material/Edit";
-import ProfileForm from "./ProfileFrom";
+import ProfileForm from "./ProfileForm";
 
 export const UserProfile = () => {
   const [isEdit, setIsEdit] = useState(null);
