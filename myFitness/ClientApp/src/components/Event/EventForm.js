@@ -77,33 +77,78 @@ const EventForm = () => {
 
         setLoading(true);
         try {
-            const response = await fetch('api/event', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    ...formData,
-                    isDeleted: false,
-                    createdOn: new Date().toISOString(),
-                    status: "Created",
-                    createdBy: 0
-                }),
-            });
+            if (isAdd === true) {
+                const response = await fetch('api/event', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ...formData,
+                        isDeleted: false,
+                        createdOn: new Date().toISOString(),
+                        status: "Created",
+                        createdBy: 0
+                    }),
+                });
 
-            if (!response.ok) throw new Error('Failed to create event');
+                if (!response.ok) throw new Error('Failed to create event');
 
-            await response.json();
-            console.log('Event created successfully');
+                await response.json();
+                console.log('Event created successfully');
+            } else {
+                const response = await fetch(`/api/event/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to update event');
+                }
+                console.log('Event updated successfully');
+            }
+
             setFormData(initialFormData);
             handleClose();
             setLoading(false);
         } catch (error) {
-            console.error('Error creating event:', error);
+            console.error('Error:', error);
             handleClose();
             setLoading(false);
         }
     };
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`/api/event/${id}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch event');
+                }
+                const eventData = await response.json();
+
+                const formatDateTime = (dateTimeString) => {
+                    const date = new Date(dateTimeString);
+                    const formattedDate = date.toISOString().slice(0, 16);
+                    return formattedDate;
+                };
+
+                setFormData({
+                    ...eventData,
+                    startDateTime: formatDateTime(eventData.startDateTime),
+                    endDateTime: formatDateTime(eventData.endDateTime),
+                    registrationEndDate: formatDateTime(eventData.registrationEndDate)
+                });
+            } catch (error) {
+                console.error('Error fetching event:', error);
+            }
+        };
+        if (!isAdd) {
+            fetchData();
+        }
+    }, [id, isAdd]);
+
     const StyleBtn = {
         fontSize: '1rem',
         textTransform: 'none',
@@ -117,7 +162,11 @@ const EventForm = () => {
             <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Typography variant="h6" sx={{ fontWeight: 'bold', marginRight: '0.5rem', fontSize: '1.5rem' }}>New event</Typography>
+                        {
+                            isAdd === true ?
+                                <Typography variant="h6" sx={{ fontWeight: 'bold', marginRight: '0.5rem', fontSize: '1.5rem' }}>New event</Typography>
+                                : <Typography variant="h6" sx={{ fontWeight: 'bold', marginRight: '0.5rem', fontSize: '1.5rem' }}>Edit event</Typography>
+                        }
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <FormGroup>
@@ -243,7 +292,7 @@ const EventForm = () => {
                             Cancel
                         </Button>
                         <Button type="submit" variant="contained" sx={StyleBtn}>
-                            Submit
+                            Save
                         </Button>
 
                     </Grid>
