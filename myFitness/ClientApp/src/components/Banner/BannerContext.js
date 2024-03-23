@@ -1,10 +1,8 @@
 import React, { createContext, useContext, useState } from "react";
-import './Banner.css'
 import { useSnackbar } from "notistack";
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { BannerVariant } from "../../helper/Constants";
-
+ 
 const BannerContext = createContext({
     showBanner: () => { },
     showSuccessBanner: () => { },
@@ -17,18 +15,18 @@ export function BannerProvider({ children }) {
 
     const showSuccessBanner =(message) => {
         message = message ?? "Success";
-        showBanner(message, BannerVariant.SUCCESS);
+        showBanner(message, "success");
     }
 
     const showErrorBanner =(message) => {
         message = message ?? "Error";
-        showBanner(message, BannerVariant.ERROR);
+        showBanner(message, "error");
     }
 
     const showBanner = (message, variant) => {
         setBannerMessage(message);
         const options = {
-            variant: variant || BannerVariant.INFO,
+            variant: variant || "info",
             autoHideDuration: 3000, // set to 3 secs
             action: (key) => (
                 <IconButton

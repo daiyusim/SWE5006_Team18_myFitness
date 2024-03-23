@@ -1,141 +1,204 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
 
 body {
-    font-family: 'Montserrat';
-    background-color: #ffffff;
+  font-family: "Montserrat";
+  background-color: #ffffff;
 }
 
 a {
-    color: #0366d6;
+  color: #0366d6;
 }
 
 code {
-    color: #E01A76;
+  color: #e01a76;
 }
 
 .link {
-    color: #FFF;
+  color: #fff;
 }
 
-    .link:hover {
-        color: #FFF
-    }
+.link:hover {
+  color: #fff;
+}
 
 .btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
 }
 
-
 .modular-container {
-    padding-top: 30px;
-    height: 125%;
-    width: 75%;
-    background-color: #FFF;
-    border: 2px solid #1D2439;
-    border-radius: 5px;
+  padding-top: 30px;
+  height: 125%;
+  width: 75%;
+  background-color: #fff;
+  border: 2px solid #1d2439;
+  border-radius: 5px;
 }
 
 .warning {
-    color: #ff9900;
+  color: #ff9900;
 }
 
 .urgent {
-    color: #d7260f;
+  color: #d7260f;
 }
 
 .main-section-padding {
-    padding-left: 25px;
+  padding-left: 25px;
 }
 
 .form-label {
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 20px; /* 142.857% */
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 20px; /* 142.857% */
 }
 
 h5 {
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 28px; /* 155.556% */
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 28px; /* 155.556% */
 }
 
 .form-check-label {
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 24px; /* 150% */
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 150% */
 }
 
 .form-group {
-    padding-bottom: 15px;
+  padding-bottom: 15px;
 }
 
 .text-header {
-    padding-top: 15px;
+  padding-top: 15px;
 }
 
-
 .case-display {
-    display: inline-block;
-    vertical-align: top;
-    padding-left: 25px;
-    position: relative;
+  display: inline-block;
+  vertical-align: top;
+  padding-left: 25px;
+  position: relative;
 }
 
 .nav-tab-header {
-    padding-left: 15px;
-    width: 21vw;
+  padding-left: 15px;
+  width: 21vw;
 }
 
-
 @media (min-width: 768px) {
-    .case-display {
-        width: 95%;
-    }
+  .case-display {
+    width: 95%;
+  }
 }
 
 @media (min-width: 500px) and (max-width: 767px) {
-    .case-display {
-        width: 60%;
-    }
+  .case-display {
+    width: 60%;
+  }
 }
 
 /* width */
 ::-webkit-scrollbar {
-    width: 5px;
-    height: 10px;
+  width: 5px;
+  height: 10px;
 }
-
-
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: transparent;
-    border-radius: 10px;
+  background: transparent;
+  border-radius: 10px;
 }
 
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-        background-color: var(--neutral-background-stronger, #CFD5DF);
-    }
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--neutral-background-stronger, #cfd5df);
+}
 
 p {
-    margin-bottom: 0rem;
+  margin-bottom: 0rem;
 }
 
 .space-star {
-    padding-left: 5px;
-    font-weight: bold;
+  padding-left: 5px;
+  font-weight: bold;
 }
 
 .close-banner-button svg path {
-    fill: #929DAF;
+  fill: #929daf;
 }
 
 .banner {
-    background-color: red;
+  background-color: red;
+}
+.notistack-MuiContent-success {
+  background-color: #f0fff0 !important;
+  max-width: none;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.notistack-MuiContent-success svg path {
+  fill: #3f9b41;
+}
+
+.notistack-MuiContent-error {
+  background-color: #ffe6e2 !important;
+  max-width: none;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.notistack-MuiContent-error svg path {
+  fill: #d7260f;
+}
+
+.notistack-MuiContent-warning {
+  background-color: #fff4d9 !important;
+  max-width: none;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.notistack-MuiContent-warning svg path {
+  fill: #ff9900;
+}
+
+.notistack-MuiContent-info {
+  background-color: #f8f8f8 !important;
+  max-width: none;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.notistack-MuiContent-info svg path {
+  fill: #0693e3;
+}
+
+#notistack-snackbar {
+  color: #1b283d;
+  font-size: 0.875rem;
+  font-weight: bold;
+  line-height: 1.25rem;
+}
+
+.cancel-btn {
+  width: 102px;
+  height: 40px;
+  padding: 0px, 24px, 0px, 24px;
+  border-radius: 8px;
+  border: 1px thick;
+  gap: 8px;
+}
+
+.delete-btn {
+  width: 102px;
+  height: 40px;
+  padding: 0px, 24px, 0px, 24px;
+  border-radius: 8px;
+  gap: 8px;
+  background-color: #df3f00 !important;
 }

@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import './Banner.css';
 import BannerContext from "./BannerContext";
 
 function Banner() {
