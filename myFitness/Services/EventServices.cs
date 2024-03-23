@@ -13,7 +13,7 @@ namespace myFitness.Services
         {
            var mongoClient = new MongoClient(settings.Value.Connection);
            var mongoDb = mongoClient.GetDatabase(settings.Value.DatabaseName);
-           _eventCollection = mongoDb.GetCollection<Event>(settings.Value.CollectionName);
+           _eventCollection = mongoDb.GetCollection<Event>(settings.Value.Events);
         }
 
         public async Task<List<Event>> GetAsync() => await _eventCollection.Find(_ => true).ToListAsync();
