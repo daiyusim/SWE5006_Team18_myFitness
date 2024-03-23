@@ -6,8 +6,7 @@ const DeleteEvent = ({ open, handleClose, eventId, eventName }) => {
         fontSize: '1rem',
         textTransform: 'none',
         fontWeight: 'bold',
-        backgroundColor: '#d03530',
-        marginLeft: 'auto'
+        backgroundColor: '#d03530'
     }
     const handleDelete = async (eventId) => {
         try {

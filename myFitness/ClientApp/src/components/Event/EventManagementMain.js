@@ -80,6 +80,13 @@ export const EventManagementMain = () => {
             .catch(e => console.log("Error fetching events", e))
             .finally(() => setLoading(false));
     };
+    const styleBtn = {
+        fontSize: '1rem',
+        textTransform: 'none',
+        fontWeight: 'bold',
+        backgroundColor: '#23418B',
+        marginLeft: 'auto'
+    };
 
     useEffect(() => {
         setLoading(true);
