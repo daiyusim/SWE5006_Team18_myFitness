@@ -6,10 +6,12 @@ import { LoadingProvider } from './components/shared/LoadingContext';
 import MainContainer from './components/MainContainer';
 import NavHeader from './components/NavHeader';
 import NavFooter from './components/NavFooter';
-
 import Loader from './components/shared/Loader';
 import { Provider } from 'react-redux';
 import './custom.css'
+import { SnackbarProvider } from "notistack";
+import { BannerProvider } from './components/Banner/BannerContext';
+import Banner from './components/Banner/Banner';
 /*import store from './Store/Store';*/
 import { Grid } from "@mui/material";
 //import { CookiesProvider, useCookies } from 'react-cookies'
@@ -29,17 +31,23 @@ const App = () => {
 
     }
     return (
-
                 <ThemeProvider theme={theme}>
+                    <SnackbarProvider maxSnack={3}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right'
+                            }}>
+                            <BannerProvider>
                 <LoadingProvider>
+                    <Banner/>
                 <Loader />
                 <Grid item md={12} className="nav-header"><NavHeader /></Grid>
                 <MainContainer item md={12} />
                 <Grid item md={12}><NavFooter /></Grid>
                 </LoadingProvider>
+                </BannerProvider>
+                </SnackbarProvider>
                 </ThemeProvider>
- 
-
     )
 }
 
