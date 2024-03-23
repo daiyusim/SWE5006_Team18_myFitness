@@ -4,12 +4,30 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { useLoading } from "../shared/LoadingContext";
-
+import AttendanceForm from "./AttendanceForm";
 
 export const AttendanceMain = () => {
     const [records, setRecords] = useState(null);
+    const [id, setId] = useState(null);
     const { setLoading } = useLoading();
-    useEffect(() => {
+    const [showAttendanceForm, setShowAttendanceForm] = useState(false);
+
+    const handleEventClick = (eventInfo) => {
+        setId(eventInfo.event.id)
+        setShowAttendanceForm(true);
+        console.log('Event ID:', eventInfo.event.id);
+        console.log('Event Title:', eventInfo.event.title);
+        console.log('Event Date:', eventInfo.event.start);
+        console.log('Description:', eventInfo.event.extendedProps.description);
+    };
+
+    const handleClose = () => {
+        setShowAttendanceForm(false);
+        setId(null);
+        setRecords(null);
+        fetchEvents();
+    };
+    const fetchEvents = () => {
         setLoading(true);
         fetch("api/event")
             .then(r => r.json())
@@ -18,20 +36,19 @@ export const AttendanceMain = () => {
                 const events = res.map(event => ({
                     id: event.id,
                     title: event.title,
-                    date: event.startDateTime
+                    date: event.startDateTime,
+                    description: event.description
                 }));
                 setRecords(events);
             })
             .catch(e => console.log("Error fetching events", e))
             .finally(() => setLoading(false));
+    };
+    useEffect(() => {
+        setLoading(true);
+        fetchEvents();
     }, []);
 
-    const handleEventClick = (eventInfo) => {
-        console.log('Event ID:', eventInfo.event.id);
-        console.log('Event Title:', eventInfo.event.title);
-        console.log('Event Date:', eventInfo.event.start);
-        console.log('Description:', eventInfo.event.extendedProps.description);
-    };
     return (
         <Box sx={{ marginTop: '1rem' }}>
             <Grid container>
@@ -49,6 +66,7 @@ export const AttendanceMain = () => {
                     />
                 </Grid>
             </Grid>
+            {showAttendanceForm && (<AttendanceForm open={showAttendanceForm} handleClose={handleClose} id={id} />)}
 
         </Box>
     );

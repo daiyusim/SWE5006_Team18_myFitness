@@ -10,8 +10,7 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
         fontSize: '1rem',
         textTransform: 'none',
         fontWeight: 'bold',
-        backgroundColor: '#23418B',
-        marginLeft: 'auto'
+        backgroundColor: '#23418B'
     };
 
     useEffect(() => {
