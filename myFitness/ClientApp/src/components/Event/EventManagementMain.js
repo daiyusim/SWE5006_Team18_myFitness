@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useLoading } from "../shared/LoadingContext";
 import DeleteEvent from "./DeleteEvent";
-
+import RegisterEvent from "./RegisterEvent";
 const categoryColors = {
     All: { backgroundColor: '#FFA500', color: 'white' },
     Workout: { backgroundColor: '#FF5733', color: 'white' },
@@ -26,6 +26,8 @@ export const EventManagementMain = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [showRegisterDialog, setShowRegisterDialog] = useState(false);
+    
     const handleClick = (event, eventId, eventName) => {
         setSelectedRowId(eventId);
         setSelectedRowEventName(eventName);
@@ -38,6 +40,19 @@ export const EventManagementMain = () => {
 
     const handleCloseDeleteDialog = () => {
         setShowDeleteDialog(false);
+        setSelectedRowId(null)
+        setSelectedRowEventName(null)
+        handleClose();
+        fetchEvents();
+    };
+
+    const handleShowRegisterDialog = () => {
+        setShowRegisterDialog(true);
+
+    };
+
+    const handleCloseRegisterDialog = () => {
+        setShowRegisterDialog(false);
         setSelectedRowId(null)
         setSelectedRowEventName(null)
         handleClose();
@@ -203,7 +218,7 @@ export const EventManagementMain = () => {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                <MenuItem onClick={handleClose}>Register</MenuItem>
+                                <MenuItem onClick={handleShowRegisterDialog}>Register</MenuItem>
                                 {/* set the user access rights after that */}
                                 {event.totalRegistered === 0 && (<MenuItem onClick={handleEditEvent}>Edit</MenuItem>)}
                                 {event.totalRegistered === 0 && (<MenuItem onClick={handleShowDeleteDialog}>Delete</MenuItem>)}
@@ -217,6 +232,8 @@ export const EventManagementMain = () => {
                
               
             {showDeleteDialog && (<DeleteEvent open={showDeleteDialog} handleClose={handleCloseDeleteDialog} eventId={selectedRowId} eventName={selectedRowEventName} />)}
+
+            {showRegisterDialog && (<RegisterEvent open={showRegisterDialog} handleClose={handleCloseRegisterDialog} eventId={selectedRowId} />)}
     </Box>
    
 
