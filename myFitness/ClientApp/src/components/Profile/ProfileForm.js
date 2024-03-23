@@ -1,4 +1,4 @@
-import { Box, Typography, Grid, Modal, Button, Container, IconButton, FormLabel,FormGroup, FormControl, InputLabel, Select, MenuItem, TextField } from '@mui/material'; 
+import { Box, Typography, Grid, Modal, Button, Container, IconButton, FormLabel,FormGroup, FormControl, Select, MenuItem, TextField } from '@mui/material'; 
 import CloseIcon from '@mui/icons-material/Close'; 
 import React, { useState, useEffect } from 'react'; 
 
@@ -124,9 +124,10 @@ const ProfileForm = ({ open, isEdit, handleClose, profileInfo }) => {
                                             onChange={handleChange}
                                             required
                                         >
-                                            <MenuItem value="sports">Sports</MenuItem>
-                                            <MenuItem value="music">Music</MenuItem>
-                                            <MenuItem value="reading">Reading</MenuItem>
+                                            <MenuItem value="workout">Workout</MenuItem>
+                                            <MenuItem value="fitness">Fitness</MenuItem>
+                                            <MenuItem value="yoga">Yoga</MenuItem>
+                                            <MenuItem value="dance">Dance</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Grid> 
