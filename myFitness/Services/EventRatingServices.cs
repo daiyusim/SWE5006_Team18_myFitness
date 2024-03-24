@@ -5,7 +5,7 @@ using myFitness.Models;
 
 namespace myFitness.Services
 {
-    public class EventRatingServices
+    public class EventRatingServices :IEventRatingServices
     {
         private readonly IMongoCollection<EventRating> _eventRatingCollection;
 
