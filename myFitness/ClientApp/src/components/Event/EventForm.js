@@ -130,7 +130,10 @@ const EventForm = () => {
 
                 const formatDateTime = (dateTimeString) => {
                     const date = new Date(dateTimeString);
+                    const offset = date.getTimezoneOffset();
+                    date.setTime(date.getTime() - offset * 60 * 1000);
                     const formattedDate = date.toISOString().slice(0, 16);
+
                     return formattedDate;
                 };
 

@@ -61,7 +61,7 @@ namespace myFitness.Services
             foreach (var registration in registrations)
             {
                 registration.User = _userCollection.Find(u => u.Id == registration.UserId).FirstOrDefault();
-                registration.Attendance = _attendanceCollection.Find(u => u.UserId == registration.UserId).FirstOrDefault();
+                registration.Attendance = _attendanceCollection.Find(u => u.UserId == registration.UserId && u.EventId == eventId).FirstOrDefault();
             }
 
 
