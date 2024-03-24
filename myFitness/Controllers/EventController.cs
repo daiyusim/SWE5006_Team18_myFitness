@@ -71,5 +71,14 @@ namespace myFitness.Controllers
 
             return Ok(new { message = "Deleted Successfully" });
         }
+
+        // GET api/event/registrations/{id}
+        [HttpGet("registrations/{id:length(24)}")]
+        public Event GetRegistrationsForEvent(string id)
+        {
+            return _eventServices.GetRegistrationsForEvent(id);
+        }
+
+
     }
 }

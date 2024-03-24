@@ -30,5 +30,42 @@ namespace myFitness.Services
 
         public async Task RemoveAsync(string id)=>
             await _attendanceCollection.DeleteOneAsync(x=> x.Id == id);
+
+        public async Task<bool> SubmitAttendance(List<Attendance> attendances)
+        {
+            try
+            {
+                foreach (var attendance in attendances)
+                {
+                    var existingAttendance = await _attendanceCollection.FindOneAndUpdateAsync(
+                        Builders<Attendance>.Filter.And(
+                            Builders<Attendance>.Filter.Eq(a => a.UserId, attendance.UserId),
+                            Builders<Attendance>.Filter.Eq(a => a.EventId, attendance.EventId)
+                        ),
+                        Builders<Attendance>.Update
+                            .Set(a => a.IsAttended, attendance.IsAttended)
+                            .Set(a => a.CreatedOn, DateTime.UtcNow),
+                        new FindOneAndUpdateOptions<Attendance>
+                        {
+                            IsUpsert = true,
+                            ReturnDocument = ReturnDocument.After
+                        });
+
+                    // If there was no existing record, insert a new one
+                    if (existingAttendance == null)
+                    {
+                        attendance.CreatedOn = DateTime.UtcNow;
+                        await _attendanceCollection.InsertOneAsync(attendance);
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Log the error
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

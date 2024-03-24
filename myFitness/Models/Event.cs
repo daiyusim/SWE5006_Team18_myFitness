@@ -45,5 +45,7 @@ namespace myFitness.Models
 
         [BsonElement("createdBy")]
         public int CreatedBy { get; set; }
+
+        public List<Registration>? Registrations { get; set; }
     }
 }
