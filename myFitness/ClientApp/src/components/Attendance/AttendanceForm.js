@@ -1,0 +1,165 @@
+import React, { useEffect, useState } from 'react';
+import { Button, Box, Typography, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, FormControlLabel, Checkbox } from '@mui/material';
+import { useLoading } from '../shared/LoadingContext';
+import axios from 'axios';
+
+const AttendanceForm = ({ open, handleClose, id }) => {
+    const { setLoading } = useLoading();
+    const [attendance, setAttendance] = useState({});
+    const [event, setEvent] = useState(null);
+    const styleBtn = {
+        fontSize: '1rem',
+        textTransform: 'none',
+        fontWeight: 'bold',
+        backgroundColor: '#23418B',
+    };
+
+    const handleCheckboxChange = (userId) => (event) => {
+        const isChecked = event.target.checked;
+        setAttendance((prevAttendance) => ({
+            ...prevAttendance,
+            [userId]: isChecked,
+        }));
+    };
+ 
+    useEffect(() => {
+        setLoading(true);
+        const fetchEvent = async () => {
+            try {
+                const response = await fetch(`/api/event/registrations/${id}`);
+                if (!response.ok) {
+                    console.error('Failed to fetch event');
+                    setLoading(false);
+                    return;
+                }
+                const eventData = await response.json();
+                console.log(eventData)
+                setEvent(eventData);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching event:', error);
+                setLoading(false);
+            }
+        };
+        fetchEvent();
+    }, [id]);
+
+
+    useEffect(() => {
+        if (event && event.registrations) {
+            const initialAttendance = {};
+            event.registrations.forEach(registration => {
+                initialAttendance[registration.userId] = registration.attendance ? registration.attendance.isAttended : false;
+            });
+            setAttendance(initialAttendance);
+        }
+    }, [event]);
+
+    const handleSubmit = async () => {
+        try {
+            const attendanceData = event.registrations.map(registration => ({
+                userId: registration.userId,
+                eventId: event.id,
+                isAttended: attendance[registration.userId] || false, // If not checked, default to false
+                createdOn: new Date().toISOString()
+            }));
+            await axios.post('/api/attendance', attendanceData);
+        } catch (error) {
+            console.error('Error submitting attendance:', error);
+        }
+    };
+
+    return (
+        <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="register-event-modal-title"
+            aria-describedby="register-event-modal-description"
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 9999,
+            }}
+        >
+            <>
+                {event && (
+                    <Box
+                        sx={{
+                            width: '80vh',
+                            maxHeight: '70vh',
+                            bgcolor: 'background.paper',
+                            p: 4,
+                            borderRadius: '20px',
+                            overflowY: 'auto',
+                        }}
+                    >
+                        <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold', marginBottom: '1rem' }}>
+                            {event.title} - Attendance Marking
+                        </Typography>
+                        <form onSubmit={handleSubmit} encType="multipart/form-data">
+                            <TableContainer>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell><strong>Participants</strong></TableCell>
+                                            <TableCell><strong>Attended</strong></TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {event.registrations && event.registrations.length > 0 ? (
+                                            event.registrations.map((registration) => (
+                                                <TableRow key={registration.userId}>
+                                                    <TableCell>{registration.user && registration.user.name}</TableCell>
+                                                    <TableCell>
+                                                        <FormControlLabel
+                                                            control={<Checkbox
+                                                                onChange={(event) => handleCheckboxChange(registration.userId)(event)}
+                                                                checked={attendance.hasOwnProperty(registration.userId) ? attendance[registration.userId] : registration.attendance?.isAttended || false}
+                                                            />}
+                                                            label=""
+                                                        />
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        ) : (
+                                            <TableRow>
+                                                <TableCell colSpan={2}>No Registered Participants</TableCell>
+                                            </TableRow>
+                                        )}
+
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <Box
+                                sx={{
+                                    position: 'sticky',
+                                    bottom: 0,
+                                    zIndex: 1,
+                                    p: 2,
+                                    borderRadius: '20px',
+                                    bgcolor: 'background.paper',
+                                    boxShadow: '0px -4px 4px rgba(0, 0, 0, 0.1)',
+                                    mt: 3,
+                                    display: 'flex',
+                                    justifyContent: 'flex-end',
+                                }}
+                            >
+                                <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+                                    <Button variant="outlined" sx={{ mr: 2 }} onClick={handleClose}>
+                                        Cancel
+                                    </Button>
+                                    <Button type="submit" variant="contained" sx={styleBtn}>
+                                        Submit
+                                    </Button>
+                                </Box>
+                            </Box>
+                        </form>
+                    </Box>
+                )}
+            </>
+        </Modal>
+    );
+};
+
+export default AttendanceForm;
