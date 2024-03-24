@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Box, Typography, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, FormControlLabel, Checkbox } from '@mui/material';
 import { useLoading } from '../shared/LoadingContext';
+import axios from 'axios';
 
 const AttendanceForm = ({ open, handleClose, id }) => {
     const { setLoading } = useLoading();
-    const [checkedUsers, setCheckedUsers] = useState([]);
+    const [attendance, setAttendance] = useState({});
     const [event, setEvent] = useState(null);
     const styleBtn = {
         fontSize: '1rem',
@@ -12,38 +13,27 @@ const AttendanceForm = ({ open, handleClose, id }) => {
         fontWeight: 'bold',
         backgroundColor: '#23418B',
     };
-    const userList = [
-        { userId: '1', userName: 'User 1' },
-        { userId: '2', userName: 'User 2' },
-        { userId: '3', userName: 'User 3' },
-        { userId: '4', userName: 'User 4' },
-        { userId: '5', userName: 'User 5' },
-        { userId: '6', userName: 'User 6' },
-        { userId: '7', userName: 'User 7' },
-        { userId: '8', userName: 'User 8' },
-        { userId: '9', userName: 'User 9' },
-        { userId: '10', userName: 'User 10' },
-    ];
 
     const handleCheckboxChange = (userId) => (event) => {
-        if (event.target.checked) {
-            setCheckedUsers((prevCheckedUsers) => [...prevCheckedUsers, userId]);
-        } else {
-            setCheckedUsers((prevCheckedUsers) => prevCheckedUsers.filter((id) => id !== userId));
-        }
+        const isChecked = event.target.checked;
+        setAttendance((prevAttendance) => ({
+            ...prevAttendance,
+            [userId]: isChecked,
+        }));
     };
-
+ 
     useEffect(() => {
         setLoading(true);
         const fetchEvent = async () => {
             try {
-                const response = await fetch(`/api/event/${id}`);
+                const response = await fetch(`/api/event/registrations/${id}`);
                 if (!response.ok) {
                     console.error('Failed to fetch event');
                     setLoading(false);
                     return;
                 }
                 const eventData = await response.json();
+                console.log(eventData)
                 setEvent(eventData);
                 setLoading(false);
             } catch (error) {
@@ -54,8 +44,29 @@ const AttendanceForm = ({ open, handleClose, id }) => {
         fetchEvent();
     }, [id]);
 
+
+    useEffect(() => {
+        if (event && event.registrations) {
+            const initialAttendance = {};
+            event.registrations.forEach(registration => {
+                initialAttendance[registration.userId] = registration.attendance ? registration.attendance.isAttended : false;
+            });
+            setAttendance(initialAttendance);
+        }
+    }, [event]);
+
     const handleSubmit = async () => {
-        // Implement submission logic here
+        try {
+            const attendanceData = event.registrations.map(registration => ({
+                userId: registration.userId,
+                eventId: event.id,
+                isAttended: attendance[registration.userId] || false, // If not checked, default to false
+                createdOn: new Date().toISOString()
+            }));
+            await axios.post('/api/attendance', attendanceData);
+        } catch (error) {
+            console.error('Error submitting attendance:', error);
+        }
     };
 
     return (
@@ -92,21 +103,31 @@ const AttendanceForm = ({ open, handleClose, id }) => {
                                     <TableHead>
                                         <TableRow>
                                             <TableCell><strong>Participants</strong></TableCell>
-                                        <TableCell><strong>Attended</strong></TableCell>
+                                            <TableCell><strong>Attended</strong></TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {userList.map((user) => (
-                                            <TableRow key={user.userId}>
-                                                <TableCell>{user.userName}</TableCell>
-                                                <TableCell>
-                                                    <FormControlLabel
-                                                        control={<Checkbox onChange={handleCheckboxChange(user.userId)} />}
-                                                        label=""
-                                                    />
-                                                </TableCell>
+                                        {event.registrations && event.registrations.length > 0 ? (
+                                            event.registrations.map((registration) => (
+                                                <TableRow key={registration.userId}>
+                                                    <TableCell>{registration.user && registration.user.name}</TableCell>
+                                                    <TableCell>
+                                                        <FormControlLabel
+                                                            control={<Checkbox
+                                                                onChange={(event) => handleCheckboxChange(registration.userId)(event)}
+                                                                checked={attendance.hasOwnProperty(registration.userId) ? attendance[registration.userId] : registration.attendance?.isAttended || false}
+                                                            />}
+                                                            label=""
+                                                        />
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        ) : (
+                                            <TableRow>
+                                                <TableCell colSpan={2}>No Registered Participants</TableCell>
                                             </TableRow>
-                                        ))}
+                                        )}
+
                                     </TableBody>
                                 </Table>
                             </TableContainer>
