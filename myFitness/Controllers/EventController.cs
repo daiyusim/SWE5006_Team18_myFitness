@@ -29,7 +29,8 @@ namespace myFitness.Controllers
             {
                 return NotFound();
             }
-
+            ev.StartDateTime = ev.StartDateTime.ToLocalTime();
+            ev.EndDateTime = ev.EndDateTime.ToLocalTime();
             return ev;
         }
 
@@ -37,7 +38,13 @@ namespace myFitness.Controllers
         [HttpPost]
         public async Task<ActionResult<Event>> Post(Event ev)
         {
+
+
+            // Convert the parsed datetime to UTC
+            ev.StartDateTime= ev.StartDateTime.ToUniversalTime();
+            ev.EndDateTime = ev.EndDateTime.ToUniversalTime();
             await _eventServices.CreateAsync(ev);
+
             return CreatedAtAction(nameof(Get), new {id = ev.Id}, ev);
         }
 
@@ -52,7 +59,8 @@ namespace myFitness.Controllers
             }
 
             db_ev.Id = ev.Id;
-
+            db_ev.StartDateTime = ev.StartDateTime.ToUniversalTime();
+            db_ev.EndDateTime = ev.EndDateTime.ToUniversalTime();
             await _eventServices.UpdateAsync(id, ev);
 
             return Ok("Updated Successfully");
