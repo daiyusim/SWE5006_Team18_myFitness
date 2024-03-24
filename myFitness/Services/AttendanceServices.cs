@@ -5,7 +5,7 @@ using myFitness.Models;
 
 namespace myFitness.Services
 {
-    public class AttendanceServices
+    public class AttendanceServices : IAttendanceServices
     {
         private readonly IMongoCollection<Attendance> _attendanceCollection;
 

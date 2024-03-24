@@ -8,9 +8,10 @@ namespace myFitness.Controllers
     [ApiController]
     public class EventController : ControllerBase
     {
-        private readonly EventServices _eventServices;
+        private readonly IEventServices _eventServices;
 
-        public EventController(EventServices eventServices) {
+        public EventController(IEventServices eventServices)
+        {
             _eventServices = eventServices;
         }
 
