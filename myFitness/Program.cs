@@ -7,12 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<DatabaseSettings>(
                 builder.Configuration.GetSection("ConnectionStrings"));
 
-builder.Services.AddSingleton<EventServices>();
-builder.Services.AddSingleton<RegistrationServices>();
-builder.Services.AddSingleton<EventRatingServices>();
-builder.Services.AddSingleton<UserServices>();
-builder.Services.AddSingleton<AttendanceServices>();
-builder.Services.AddSingleton<ProfileServices>();
+builder.Services.AddSingleton<IEventServices, EventServices>();
+builder.Services.AddSingleton<IRegistrationServices, RegistrationServices>();
+builder.Services.AddSingleton<IEventRatingServices, EventRatingServices>();
+builder.Services.AddSingleton<IUserServices, UserServices>();
+builder.Services.AddSingleton<IAttendanceServices, AttendanceServices>();
+builder.Services.AddSingleton<IProfileServices, ProfileServices>();
 
 
 builder.Services.AddControllersWithViews();

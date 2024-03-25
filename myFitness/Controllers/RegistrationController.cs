@@ -8,9 +8,9 @@ namespace myFitness.Controllers
     [ApiController]
     public class RegistrationController : ControllerBase
     {
-        private readonly RegistrationServices _regisServices;
+        private readonly IRegistrationServices _regisServices;
 
-        public RegistrationController(RegistrationServices regisServices)
+        public RegistrationController(IRegistrationServices regisServices)
         {
             _regisServices = regisServices;
         }

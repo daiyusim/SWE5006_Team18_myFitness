@@ -5,7 +5,7 @@ using myFitness.Models;
 
 namespace myFitness.Services
 {
-    public class ProfileServices
+    public class ProfileServices : IProfileServices
     {
         private readonly IMongoCollection<Profile> _profileCollection;
 

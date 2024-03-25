@@ -5,7 +5,7 @@ using myFitness.Models;
 
 namespace myFitness.Services
 {
-    public class RegistrationServices
+    public class RegistrationServices : IRegistrationServices
     {
         private readonly IMongoCollection<Registration> _registrationCollection;
 

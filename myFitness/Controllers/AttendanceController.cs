@@ -8,9 +8,9 @@ namespace myFitness.Controllers
     [ApiController]
     public class AttendanceController : ControllerBase
     {
-        private readonly AttendanceServices _attendanceServices;
+        private readonly IAttendanceServices _attendanceServices;
 
-        public AttendanceController(AttendanceServices attendanceServices)
+        public AttendanceController(IAttendanceServices attendanceServices)
         {
             _attendanceServices = attendanceServices;
         }
@@ -29,7 +29,7 @@ namespace myFitness.Controllers
                 if (success)
                     return Ok();
                 else
-                    return StatusCode(500, "Failed to submit attendance."); // Or handle failure appropriately
+                    return StatusCode(500, "Failed to submit attendance."); 
             }
             catch (Exception ex)
             {

@@ -6,17 +6,25 @@ using myFitness.Models;
 
 namespace myFitness.Services
 {
-    public class EventServices
+    public class EventServices : IEventServices
     {
         private readonly IMongoCollection<Event> _eventCollection;
         private readonly IMongoCollection<User> _userCollection;
         private readonly IMongoCollection<Registration> _registrationCollection;
         private readonly IMongoCollection<Attendance> _attendanceCollection;
+
+        // Parameterless constructor
+        public EventServices()
+        {
+            // Default constructor
+        }
+
+        // Constructor with IOptions<DatabaseSettings>
         public EventServices(IOptions<DatabaseSettings> settings)
         {
-           var mongoClient = new MongoClient(settings.Value.Connection);
-           var mongoDb = mongoClient.GetDatabase(settings.Value.DatabaseName);
-           _eventCollection = mongoDb.GetCollection<Event>(settings.Value.Events);
+            var mongoClient = new MongoClient(settings.Value.Connection);
+            var mongoDb = mongoClient.GetDatabase(settings.Value.DatabaseName);
+            _eventCollection = mongoDb.GetCollection<Event>(settings.Value.Events);
             _userCollection = mongoDb.GetCollection<User>(settings.Value.Users);
             _registrationCollection = mongoDb.GetCollection<Registration>(settings.Value.Registration);
             _attendanceCollection = mongoDb.GetCollection<Attendance>(settings.Value.Attendance);
@@ -53,7 +61,7 @@ namespace myFitness.Services
             foreach (var registration in registrations)
             {
                 registration.User = _userCollection.Find(u => u.Id == registration.UserId).FirstOrDefault();
-                registration.Attendance = _attendanceCollection.Find(u => u.UserId == registration.UserId).FirstOrDefault();
+                registration.Attendance = _attendanceCollection.Find(u => u.UserId == registration.UserId && u.EventId == eventId).FirstOrDefault();
             }
 
 
