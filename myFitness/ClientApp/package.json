@@ -15,6 +15,7 @@
     "@fullcalendar/timegrid": "^6.1.11",
     "@mui/icons-material": "^5.15.12",
     "@mui/material": "^5.15.12",
+    "axios": "^1.6.8",
     "formik": "^2.4.5",
     "http-proxy-middleware": "^2.0.6",
     "jwt-decode": "^4.0.0",

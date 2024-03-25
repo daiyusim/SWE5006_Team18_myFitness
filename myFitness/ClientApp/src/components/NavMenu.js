@@ -67,11 +67,11 @@ const NavMenu = () => {
     
     return (
         <div className="item-display">
-            <div className="side-panel">
+            {/* <div className="side-panel">
                 <ul>
                     {generateNavButtons()}
                 </ul>
-            </div>
+            </div> */}
         </div>
     )
 }

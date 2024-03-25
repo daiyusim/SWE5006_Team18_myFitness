@@ -12,8 +12,10 @@ import './custom.css'
 import { SnackbarProvider } from "notistack";
 import { BannerProvider } from './components/Banner/BannerContext';
 import Banner from './components/Banner/Banner';
+import CssBaseline from '@mui/material/CssBaseline';
+
 /*import store from './Store/Store';*/
-import { Grid } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 //import { CookiesProvider, useCookies } from 'react-cookies'
 const App = () => {
     //const [cookies, setCookies, removeCookie] = useCookies(['user'])
@@ -31,23 +33,28 @@ const App = () => {
 
     }
     return (
-                <ThemeProvider theme={theme}>
-                    <SnackbarProvider maxSnack={3}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'right'
-                            }}>
-                            <BannerProvider>
-                <LoadingProvider>
-                    <Banner/>
-                <Loader />
-                <Grid item md={12} className="nav-header"><NavHeader /></Grid>
-                <MainContainer item md={12} />
-                <Grid item md={12}><NavFooter /></Grid>
-                </LoadingProvider>
-                </BannerProvider>
+        <ThemeProvider theme={theme}>
+            <CssBaseline >
+                <SnackbarProvider maxSnack={3}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right'
+                    }}>
+                    <BannerProvider>
+                        <LoadingProvider>
+                            <Banner />
+                            <Loader />
+                            <Grid item md={12} className="nav-header"><NavHeader /></Grid>
+                            <MainContainer item md={12} />
+                            <Grid item md={12} sx={{ backgroundColor: '#00272B' }}>
+                            <Box display="flex" flexDirection="column" position="relative">
+                                <NavFooter /></Box></Grid>
+                        </LoadingProvider>
+                    </BannerProvider>
                 </SnackbarProvider>
-                </ThemeProvider>
+            </CssBaseline >
+        </ThemeProvider>
+
     )
 }
 

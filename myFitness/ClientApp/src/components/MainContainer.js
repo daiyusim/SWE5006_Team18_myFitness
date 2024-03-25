@@ -14,13 +14,13 @@ export const MainContainer = () => {
     const [authenticationToken, setAuthenticationToken] = useState(true);
 
     return (
-        <Grid container id="main-container" sx={{ marginTop: '0' }}> {/* Ensure no top margin */}
+        <Grid container id="main-container" sx={{ marginTop: '0', marginBottom: '3rem' }}> {/* Ensure no top margin */}
             <Grid item md={12}>
                 <Grid container sx={{ display: 'block' }}>
                     {
                         authenticationToken === true ? (
-                            <Grid item className="nav-menu" sx={{ backgroundColor: 'initial' }}>
-                                <NavMenu />
+                            <Grid item className="nav-menu" sx={{ backgroundColor: 'initial', display: 'inlineBlock', minHeight: '800px' }}>
+                                {/* <NavMenu /> */}
                                 <Grid item id="content-container" className="case-display">
                                     <Routes>
                                         <Route path={BaseRoutes.Event} element={<EventManagementMain />} />
