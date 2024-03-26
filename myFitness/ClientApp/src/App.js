@@ -40,7 +40,7 @@ const App = () => {
                         vertical: 'bottom',
                         horizontal: 'right'
                     }}>
-                    <BannerProvider>
+          
                         <LoadingProvider>
                             <Banner />
                             <Loader />
@@ -50,7 +50,7 @@ const App = () => {
                             <Box display="flex" flexDirection="column" position="relative">
                                 <NavFooter /></Box></Grid>
                         </LoadingProvider>
-                    </BannerProvider>
+                 
                 </SnackbarProvider>
             </CssBaseline >
         </ThemeProvider>
