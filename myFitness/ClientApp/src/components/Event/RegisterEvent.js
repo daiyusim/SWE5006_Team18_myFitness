@@ -48,7 +48,7 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
                 eventId: eventId,
                 createdOn: new Date().toISOString(),
                 status: 'Registered',
-                userId: '65ec5ee7d4ba1c372f054549'
+                userId: '6602f019cc013fe8b77e6bc5'
             }),
         });
 

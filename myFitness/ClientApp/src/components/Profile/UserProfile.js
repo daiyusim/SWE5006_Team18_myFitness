@@ -40,7 +40,7 @@ export const UserProfile = () => {
         fetchProfileDetails();
     }, []);
     const fetchProfileDetails = async () => {
-        const UserId = '65ec5ee7d4ba1c372f054549'; // hardcode first, later use persistent userid
+        const UserId = '6602f019cc013fe8b77e6bc5'; // hardcode first, later use persistent userid
         try {
             const response = await fetch(`/api/users/${UserId}`);
             if (!response.ok) {
