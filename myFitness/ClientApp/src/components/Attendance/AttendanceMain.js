@@ -15,10 +15,6 @@ export const AttendanceMain = () => {
     const handleEventClick = (eventInfo) => {
         setId(eventInfo.event.id)
         setShowAttendanceForm(true);
-        console.log('Event ID:', eventInfo.event.id);
-        console.log('Event Title:', eventInfo.event.title);
-        console.log('Event Date:', eventInfo.event.start);
-        console.log('Description:', eventInfo.event.extendedProps.description);
     };
 
     const handleClose = () => {

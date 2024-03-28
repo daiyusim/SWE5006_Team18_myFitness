@@ -2,9 +2,11 @@ import { Box, Typography, Grid, Modal, Button, Container, IconButton, RadioGroup
 import CloseIcon from '@mui/icons-material/Close'; 
 import React, { useState, useEffect } from 'react'; 
 import { useLoading } from "../shared/LoadingContext";
+import { useBanner } from "../Banner/BannerContext";
 
 const ProfileForm = ({ open, isEdit, handleClose, profileInfo }) => { 
     const { setLoading } = useLoading();
+    const { showSuccessBanner, showErrorBanner } = useBanner();
     const initialProfileData = {
         userId: profileInfo.id,
         height: null,
@@ -36,9 +38,10 @@ const ProfileForm = ({ open, isEdit, handleClose, profileInfo }) => {
                     body: JSON.stringify(profileData),
                 });
                 if (!response.ok) {
-                    throw new Error('Failed to update profile');
+                    showErrorBanner('Failed to update profile');
+                    return;
                 }
-                console.log('Profile updated successfully');
+                showSuccessBanner('Profile updated successfully');
             } else {
                 const response = await fetch('api/profile', {
                     method: 'POST',
@@ -48,10 +51,10 @@ const ProfileForm = ({ open, isEdit, handleClose, profileInfo }) => {
                     body: JSON.stringify(profileData),
                 });
 
-                if (!response.ok) throw new Error('Failed to create profile');
+                if (!response.ok) return showErrorBanner('Failed to create profile');
 
                 await response.json();
-                console.log('Profile created successfully');
+                showSuccessBanner('Profile created successfully');
             }
             handleClose();
             setLoading(false);

@@ -7,8 +7,10 @@ import { BaseRoutes } from '../helper/Routing';
 import dayjs from 'dayjs';
 import AddressAutoComplete from '../shared/AddressAutoComplete';
 import MapComponent from '../shared/MapComponent';
+import { useBanner } from "../Banner/BannerContext";
 
 const EventForm = () => {
+    const { showSuccessBanner, showErrorBanner } = useBanner();
     const initialFormData = {
         title: '',
         description: '',
@@ -104,10 +106,13 @@ const EventForm = () => {
                     }),
                 });
 
-                if (!response.ok) throw new Error('Failed to create event');
+                if (!response.ok) {
+                    showErrorBanner('Failed to create event');
+                    return;
+                }
 
                 await response.json();
-                console.log('Event created successfully');
+                showSuccessBanner('Event created successfully');
             } else {
                 const response = await fetch(`/api/event/${id}`, {
                     method: 'PUT',
@@ -117,16 +122,17 @@ const EventForm = () => {
                     body: JSON.stringify(formData),
                 });
                 if (!response.ok) {
-                    throw new Error('Failed to update event');
+                    showErrorBanner('Failed to update event');
+                    return;
                 }
-                console.log('Event updated successfully');
+                showSuccessBanner('Event updated successfully');
             }
 
             setFormData(initialFormData);
             handleClose();
             setLoading(false);
         } catch (error) {
-            console.error('Error:', error);
+            showErrorBanner('Error:', error);
             handleClose();
             setLoading(false);
         }

@@ -3,8 +3,10 @@ import { Button, Box, Typography, Modal, FormGroup, FormControl, FormLabel, Form
 import { useLoading } from '../shared/LoadingContext';
 import dayjs from 'dayjs';
 import MapComponent from '../shared/MapComponent';
+import { useBanner } from "../Banner/BannerContext";
 
 const RegisterEvent = ({ open, handleClose, eventId }) => {
+    const { showSuccessBanner, showErrorBanner } = useBanner();
     const { setLoading } = useLoading();
     const [event, setEvent] = useState(null);
     const styleBtn = {
@@ -20,7 +22,7 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
             try {
                 const response = await fetch(`/api/event/${eventId}`);
                 if (!response.ok) {
-                    console.error('Failed to fetch event');
+                    showErrorBanner('Failed to fetch event');
                     setLoading(false);
                     return;
                 }
@@ -28,14 +30,15 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
                 setEvent(eventData);
                 setLoading(false);
             } catch (error) {
-                console.error('Error fetching event:', error);
+                showErrorBanner('Error fetching event:', error);
                 setLoading(false);
             }
         };
         fetchEvent();
     }, [eventId]);
 
-    const handleRegister = async () => {
+    const handleRegister = async (event) => {
+        event.preventDefault();
         const response = await fetch('api/registration', {
             method: 'POST',
             headers: {
@@ -50,11 +53,13 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to register event');
+            showErrorBanner('Failed to register event');
+            return;
         }
 
         await response.json();
-        console.log('Event registration successful');
+        showSuccessBanner('Event registration successful');
+        handleClose();
     };
 
     return (
