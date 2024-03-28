@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Button, Box, Typography, Modal, FormGroup, FormControl, FormLabel, FormControlLabel, Checkbox } from '@mui/material';
+import { Button, Box, Typography, Modal, FormGroup, FormControl, FormLabel, FormControlLabel, Checkbox, Grid } from '@mui/material';
 import { useLoading } from '../shared/LoadingContext';
 import dayjs from 'dayjs';
+import MapComponent from '../shared/MapComponent';
 
 const RegisterEvent = ({ open, handleClose, eventId }) => {
     const { setLoading } = useLoading();
@@ -83,24 +84,27 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
                         <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
                             Register for {event.title}
                         </Typography>
+                        <Grid item xs={12} sm={6}>
+                            {event?.lat && event?.long && (
+                                <MapComponent lat={event?.lat} long={event?.long} address={event?.address} />)}
+                        </Grid>
                         <Typography sx={{ mt: 2 }}>
-                            Event Description:
-                            <br />
+                            <b style={{ display: 'inline-block', marginRight: '8px' }}>Event Description:</b>
                             {event.description}
                         </Typography>
                         <Typography sx={{ mt: 1 }}>
-                            Event Type:
-                            <br />
+                            <b style={{ display: 'inline-block', marginRight: '8px' }}>Event Type:</b>
+                     
                             {event.category}
                         </Typography>
                         <Typography sx={{ mt: 1 }}>
-                            Date and Time:
-                            <br />
+                            <b style={{ display: 'inline-block', marginRight: '8px' }}>Date and Time:</b>
+                      
                             {`${dayjs(event.startDateTime).format('DD/MM/YYYY HH:mm')} - ${dayjs(event.endDateTime).format('DD/MM/YYYY HH:mm')}`}
                         </Typography>
                         <Typography sx={{ mt: 1 }}>
-                            Organizer:
-                            <br />
+                            <b style={{ display: 'inline-block', marginRight: '8px' }}>Organizer:</b>
+                            
                             {event.createdBy} (change to username)
                         </Typography>
                         <form onSubmit={handleRegister} encType="multipart/form-data">

@@ -46,6 +46,15 @@ namespace myFitness.Models
         [BsonElement("createdBy")]
         public int CreatedBy { get; set; }
 
+
+        [BsonElement("address")]
+        public string Address { get; set; }
+
+        [BsonElement("lat")]
+        public double Lat { get; set; }
+
+        [BsonElement("long")]
+        public double Long { get; set; }
         public List<Registration>? Registrations { get; set; }
     }
 }
