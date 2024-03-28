@@ -20,13 +20,13 @@ namespace myFitness.Models
         [BsonElement("weight")]
         public double Weight { get; set; }
 
-        [BsonElement("interest")]
-        public List<string> Interest { get; set; }
+        [BsonElement("interests")]
+        public List<string> Interests { get; set; }
 
         [BsonElement("gender")]
         public string Gender { get; set; }
 
         [BsonElement("goals")]
-        public List<string> Goals { get; set; }
+        public string Goals { get; set; }
     }
 }

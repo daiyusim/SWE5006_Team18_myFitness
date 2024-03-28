@@ -8,7 +8,7 @@ builder.Services.Configure<DatabaseSettings>(
                 builder.Configuration.GetSection("ConnectionStrings"));
 
 builder.Services.AddSingleton<IEventServices, EventServices>();
-builder.Services.AddSingleton<IRegistrationServices, RegistrationServices>();
+builder.Services.AddSingleton<IEventRegistrationServices, EventRegistrationServices>();
 builder.Services.AddSingleton<IEventRatingServices, EventRatingServices>();
 builder.Services.AddSingleton<IUserServices, UserServices>();
 builder.Services.AddSingleton<IAttendanceServices, AttendanceServices>();

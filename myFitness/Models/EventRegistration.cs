@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace myFitness.Models
 {
     [BsonIgnoreExtraElements]
-    public class Registration
+    public class EventRegistration
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

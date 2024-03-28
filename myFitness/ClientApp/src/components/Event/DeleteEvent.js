@@ -1,7 +1,9 @@
 import React from 'react';
 import { Button, Box, Typography, IconButton, Modal } from '@mui/material';
+import { useBanner } from "../Banner/BannerContext";
 
 const DeleteEvent = ({ open, handleClose, eventId, eventName }) => {
+    const { showSuccessBanner, showErrorBanner } = useBanner();
     const StyleBtn = {
         fontSize: '1rem',
         textTransform: 'none',
@@ -19,6 +21,7 @@ const DeleteEvent = ({ open, handleClose, eventId, eventName }) => {
             }
 
             const data = await response.json();
+            showSuccessBanner("Event deleted successfully")
             handleClose();
         } catch (error) {
             console.error('Error deleting event:', error);

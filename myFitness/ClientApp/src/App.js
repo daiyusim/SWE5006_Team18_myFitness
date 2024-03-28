@@ -47,8 +47,8 @@ const App = () => {
                             <Grid item md={12} className="nav-header"><NavHeader /></Grid>
                             <MainContainer item md={12} />
                             <Grid item md={12} sx={{ backgroundColor: '#00272B' }}>
-                            <Box display="flex" flexDirection="column" position="relative">
-                                <NavFooter /></Box></Grid>
+                                <Box display="flex" flexDirection="column" position="relative">
+                                    <NavFooter /></Box></Grid>
                         </LoadingProvider>
                     </BannerProvider>
                 </SnackbarProvider>

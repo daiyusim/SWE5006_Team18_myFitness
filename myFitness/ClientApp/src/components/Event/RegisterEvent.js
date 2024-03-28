@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Button, Box, Typography, Modal, FormGroup, FormControl, FormLabel, FormControlLabel, Checkbox } from '@mui/material';
+import { Button, Box, Typography, Modal, FormGroup, FormControl, FormLabel, FormControlLabel, Checkbox, Grid } from '@mui/material';
 import { useLoading } from '../shared/LoadingContext';
 import dayjs from 'dayjs';
+import MapComponent from '../shared/MapComponent';
+import { useBanner } from "../Banner/BannerContext";
 
 const RegisterEvent = ({ open, handleClose, eventId }) => {
+    const { showSuccessBanner, showErrorBanner } = useBanner();
     const { setLoading } = useLoading();
     const [event, setEvent] = useState(null);
     const styleBtn = {
@@ -19,7 +22,7 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
             try {
                 const response = await fetch(`/api/event/${eventId}`);
                 if (!response.ok) {
-                    console.error('Failed to fetch event');
+                    showErrorBanner('Failed to fetch event');
                     setLoading(false);
                     return;
                 }
@@ -27,14 +30,15 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
                 setEvent(eventData);
                 setLoading(false);
             } catch (error) {
-                console.error('Error fetching event:', error);
+                showErrorBanner('Error fetching event:', error);
                 setLoading(false);
             }
         };
         fetchEvent();
     }, [eventId]);
 
-    const handleRegister = async () => {
+    const handleRegister = async (event) => {
+        event.preventDefault();
         const response = await fetch('api/registration', {
             method: 'POST',
             headers: {
@@ -44,16 +48,18 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
                 eventId: eventId,
                 createdOn: new Date().toISOString(),
                 status: 'Registered',
-                userId: '65ec5ee7d4ba1c372f054549'
+                userId: '6602f019cc013fe8b77e6bc5'
             }),
         });
 
         if (!response.ok) {
-            throw new Error('Failed to register event');
+            showErrorBanner('Failed to register event');
+            return;
         }
 
         await response.json();
-        console.log('Event registration successful');
+        showSuccessBanner('Event registration successful');
+        handleClose();
     };
 
     return (
@@ -83,24 +89,27 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
                         <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
                             Register for {event.title}
                         </Typography>
+                        <Grid item xs={12} sm={6}>
+                            {event?.lat && event?.long && (
+                                <MapComponent lat={event?.lat} long={event?.long} address={event?.address} />)}
+                        </Grid>
                         <Typography sx={{ mt: 2 }}>
-                            Event Description:
-                            <br />
+                            <b style={{ display: 'inline-block', marginRight: '8px' }}>Event Description:</b>
                             {event.description}
                         </Typography>
                         <Typography sx={{ mt: 1 }}>
-                            Event Type:
-                            <br />
+                            <b style={{ display: 'inline-block', marginRight: '8px' }}>Event Type:</b>
+                     
                             {event.category}
                         </Typography>
                         <Typography sx={{ mt: 1 }}>
-                            Date and Time:
-                            <br />
+                            <b style={{ display: 'inline-block', marginRight: '8px' }}>Date and Time:</b>
+                      
                             {`${dayjs(event.startDateTime).format('DD/MM/YYYY HH:mm')} - ${dayjs(event.endDateTime).format('DD/MM/YYYY HH:mm')}`}
                         </Typography>
                         <Typography sx={{ mt: 1 }}>
-                            Organizer:
-                            <br />
+                            <b style={{ display: 'inline-block', marginRight: '8px' }}>Organizer:</b>
+                            
                             {event.createdBy} (change to username)
                         </Typography>
                         <form onSubmit={handleRegister} encType="multipart/form-data">
