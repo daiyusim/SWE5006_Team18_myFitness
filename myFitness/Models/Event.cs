@@ -55,6 +55,6 @@ namespace myFitness.Models
 
         [BsonElement("long")]
         public double Long { get; set; }
-        public List<Registration>? Registrations { get; set; }
+        public List<EventRegistration>? Registrations { get; set; }
     }
 }

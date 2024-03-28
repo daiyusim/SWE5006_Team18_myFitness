@@ -18,17 +18,17 @@ namespace myFitness.Services
 
         public async Task<List<Profile>> GetAsync() => await _profileCollection.Find(_ => true).ToListAsync();
         
-        public async Task<Profile> GetAsync(string id) =>
-            await _profileCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        public async Task<Profile> GetAsync(string userId) =>
+            await _profileCollection.Find(x => x.UserId == userId).FirstOrDefaultAsync();
 
         public async Task CreateAsync(Profile newProfile) =>
             await _profileCollection.InsertOneAsync(newProfile);
 
 
-        public async Task UpdateAsync(string id, Profile updateProfile) =>
-            await _profileCollection.ReplaceOneAsync(x=> x.Id == id, updateProfile);
+        public async Task UpdateAsync(string userId, Profile updateProfile) =>
+            await _profileCollection.ReplaceOneAsync(x=> x.UserId == userId, updateProfile);
 
-        public async Task RemoveAsync(string id)=>
-            await _profileCollection.DeleteOneAsync(x=> x.Id == id);
+        public async Task RemoveAsync(string userId) =>
+            await _profileCollection.DeleteOneAsync(x=> x.UserId == userId);
     }
 }

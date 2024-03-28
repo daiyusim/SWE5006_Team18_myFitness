@@ -57,7 +57,7 @@ export const AttendanceMain = () => {
                     <Divider sx={{ padding: '0.5rem 0.75rem', marginBottom: '0.75rem' }} />
 
                 </Grid>
-                <Grid item md={12} sx={{ maxHeight: '600px', overflow: 'auto' }}>
+                <Grid item md={12} sx={{ maxHeight: '80vh', overflow: 'auto' }}>
                     <FullCalendar
                         plugins={[dayGridPlugin, timeGridPlugin]}
                         initialView="dayGridMonth"

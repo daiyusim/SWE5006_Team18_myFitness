@@ -1,16 +1,17 @@
-import { Box, Typography, Grid, Modal, Button, Container, IconButton, FormLabel,FormGroup, FormControl, Select, MenuItem, TextField } from '@mui/material'; 
+import { Box, Typography, Grid, Modal, Button, Container, IconButton, RadioGroup, FormLabel,Radio,FormGroup, FormControl, Select, MenuItem, TextField } from '@mui/material'; 
 import CloseIcon from '@mui/icons-material/Close'; 
 import React, { useState, useEffect } from 'react'; 
+import { useLoading } from "../shared/LoadingContext";
 
 const ProfileForm = ({ open, isEdit, handleClose, profileInfo }) => { 
+    const { setLoading } = useLoading();
     const initialProfileData = {
-        id: "",
-        userId: "",
-        height: 0,
-        weight: 0,
-        interest: [],
+        userId: profileInfo.id,
+        height: null,
+        weight: null,
+        interests: [],
         gender: "",
-        goal: [],
+        goals: "",
     }; 
     const StyleBtn = {
         fontSize: '1rem',
@@ -21,9 +22,45 @@ const ProfileForm = ({ open, isEdit, handleClose, profileInfo }) => {
     }
     const [profileData, setProfileData] = useState(initialProfileData); 
 
-    const handleSubmit = (event) => { 
+    const handleSubmit = async (event) => {
+        setLoading(true)
         event.preventDefault(); 
-        // Handle form submission
+        console.log(profileData)
+        try {
+            if (isEdit === true) {
+                const response = await fetch(`/api/profile/${profileData.userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(profileData),
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to update profile');
+                }
+                console.log('Profile updated successfully');
+            } else {
+                const response = await fetch('api/profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(profileData),
+                });
+
+                if (!response.ok) throw new Error('Failed to create profile');
+
+                await response.json();
+                console.log('Profile created successfully');
+            }
+            handleClose();
+            setLoading(false);
+        } catch (error) {
+            console.error('Error:', error);
+            handleClose();
+            setLoading(false);
+        }
+
     }; 
 
     const handleChange = (event) => { 
@@ -32,7 +69,11 @@ const ProfileForm = ({ open, isEdit, handleClose, profileInfo }) => {
     }; 
 
     useEffect(() => { 
-        // Fetch profile data
+        if (isEdit === true) {
+            setLoading(true)
+            setProfileData(profileInfo.profile)
+        }
+        setLoading(false)
     }, []); 
 
     const sharedInputStyles = { 
@@ -61,7 +102,7 @@ const ProfileForm = ({ open, isEdit, handleClose, profileInfo }) => {
                         <Grid container className="form-header"> 
                             <Grid item xs={11}> 
                                 <Typography variant="h6" id="form-title">
-                                    {isEdit ? "Edit Profile" : "Add Profile"}
+                                    {isEdit ? "Edit Profile" : "Setup Profile"}
                                 </Typography> 
                             </Grid> 
                             <Grid item xs={1} className="text-end"> 
@@ -76,7 +117,48 @@ const ProfileForm = ({ open, isEdit, handleClose, profileInfo }) => {
                         }}> 
                           
                             <Grid container spacing={2}> 
-                           
+                                <Grid item md={6} xs={6} xl={6}>
+                                    <FormControl component="fieldset" required>
+                                        <FormLabel component="legend">Gender</FormLabel>
+                                        <RadioGroup
+                                            aria-label="gender"
+                                            name="gender"
+                                            value={profileData?.gender}
+                                            onChange={handleChange}
+                                        >
+                                            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                    <label style={{ marginRight: '8px' }}>Female</label>
+                                                    <Radio value="F" required/>
+                                                </div>
+                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                    <label style={{ marginLeft: '8px' }}>Male</label>
+                                                    <Radio value="M" required/>
+                                                </div>
+                                            </div>
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item md={6} xs={6} xl={6}>
+                                    <FormControl fullWidth variant="outlined" sx={sharedInputStyles}>
+                                        <FormLabel id="interest-label" required>Interest</FormLabel>
+                                        <Select
+                                            sx={{ width: '100%' }}
+                                            labelId="interest-label"
+                                            id="interests"
+                                            name="interests"
+                                            multiple
+                                            value={profileData?.interests}
+                                            onChange={handleChange}
+                                            required
+                                        >
+                                            <MenuItem value="Workout">Workout</MenuItem>
+                                            <MenuItem value="Fitness">Fitness</MenuItem>
+                                            <MenuItem value="Yoga">Yoga</MenuItem>
+                                            <MenuItem value="Dance">Dance</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Grid> 
                                 <Grid item md={6} xs={6} xl={6}> 
                                     <FormGroup>
                                         <FormControl fullWidth>
@@ -87,7 +169,7 @@ const ProfileForm = ({ open, isEdit, handleClose, profileInfo }) => {
                                         id="height" 
                                         name="height" 
                                         onChange={handleChange} 
-                                        value={profileData.height} 
+                                        value={profileData?.height} 
                                         type='number'
                                         required
                                             />
@@ -104,44 +186,27 @@ const ProfileForm = ({ open, isEdit, handleClose, profileInfo }) => {
                                         id="weight" 
                                         name="weight" 
                                         onChange={handleChange} 
-                                        value={profileData.weight} 
+                                        value={profileData?.weight} 
                                         type='number'
                                         required
                                     /> 
                                         </FormControl>
                                     </FormGroup>
                                 </Grid> 
-                                <Grid item md={6} xs={6} xl={6}> 
-                                    <FormControl fullWidth variant="outlined" sx={sharedInputStyles}>
-                                        <FormLabel id="interest-label" required>Interest</FormLabel>
-                                        <Select
-                                        sx={{width: '100%'}}
-                                            labelId="interest-label"
-                                            id="interest"
-                                            name="interest"
-                                            multiple
-                                            value={profileData.interest}
-                                            onChange={handleChange}
-                                            required
-                                        >
-                                            <MenuItem value="workout">Workout</MenuItem>
-                                            <MenuItem value="fitness">Fitness</MenuItem>
-                                            <MenuItem value="yoga">Yoga</MenuItem>
-                                            <MenuItem value="dance">Dance</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </Grid> 
-                                <Grid item md={6} xs={6} xl={6}> 
+                                
+                                <Grid item md={12} xs={12} xl={12}> 
                                     <FormGroup>
                                         <FormControl fullWidth>
                                             <FormLabel required>Goals</FormLabel>
                                     <TextField 
                                         variant="outlined" 
                                         sx={sharedInputStyles} 
-                                        id="goal" 
-                                        name="goal" 
+                                        id="goals" 
+                                        name="goals" 
                                         onChange={handleChange} 
-                                        value={profileData.goal} 
+                                        value={profileData?.goals} 
+                                        multiline
+                                        rows={4} 
                                         required
                                     /> 
                                         </FormControl>

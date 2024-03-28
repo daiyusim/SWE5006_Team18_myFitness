@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using myFitness.Data;
 using myFitness.Models;
@@ -9,18 +10,32 @@ namespace myFitness.Services
     {
         private readonly IMongoCollection<User> _userCollection;
 
+        private readonly IMongoCollection<Profile> _profileCollection;
+
         public UserServices(IOptions<DatabaseSettings> settings)
         {
            var mongoClient = new MongoClient(settings.Value.Connection);
            var mongoDb = mongoClient.GetDatabase(settings.Value.DatabaseName);
            _userCollection = mongoDb.GetCollection<User>(settings.Value.Users);
+            _profileCollection = mongoDb.GetCollection<Profile>(settings.Value.Profile);
         }
 
         public async Task<List<User>> GetAsync() => await _userCollection.Find(_ => true).ToListAsync();
-        
-        public async Task<User> GetAsync(string id) =>
-            await _userCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
+        public User Get(string id)
+        {
+            var userObj = _userCollection.Find<User>(e => e.Id == id).FirstOrDefault();
+
+            if (userObj == null)
+            {
+                throw new ArgumentException("User not found");
+            }
+
+            var profile = _profileCollection.Find<Profile>(e => e.UserId == id).FirstOrDefault();
+
+            userObj.Profile = profile;
+            return userObj;
+        }
         public async Task CreateAsync(User newUser) =>
             await _userCollection.InsertOneAsync(newUser);
 
