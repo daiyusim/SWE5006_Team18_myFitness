@@ -5,7 +5,12 @@ import { useLoading } from "../shared/LoadingContext";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { BaseRoutes } from '../helper/Routing';
 import dayjs from 'dayjs';
+import AddressAutoComplete from '../shared/AddressAutoComplete';
+import MapComponent from '../shared/MapComponent';
+import { useBanner } from "../Banner/BannerContext";
+
 const EventForm = () => {
+    const { showSuccessBanner, showErrorBanner } = useBanner();
     const initialFormData = {
         title: '',
         description: '',
@@ -27,8 +32,17 @@ const EventForm = () => {
         endDateTime: '',
         capacity: '',
         category: '',
-        registrationEndDate: ''
+        registrationEndDate: '',
+        address: null,
+        long: null,
+        lat: null,
     });
+    const [prevSaveAddr, setPrevSaveAddr] = useState(null);
+    useEffect(() => {
+        if (formData?.address != null) {
+            setPrevSaveAddr(formData?.address);
+        }
+    },[formData?.address])
     const handleClose = () => {
         navigate(BaseRoutes.Event);
     }
@@ -92,10 +106,13 @@ const EventForm = () => {
                     }),
                 });
 
-                if (!response.ok) throw new Error('Failed to create event');
+                if (!response.ok) {
+                    showErrorBanner('Failed to create event');
+                    return;
+                }
 
                 await response.json();
-                console.log('Event created successfully');
+                showSuccessBanner('Event created successfully');
             } else {
                 const response = await fetch(`/api/event/${id}`, {
                     method: 'PUT',
@@ -105,16 +122,17 @@ const EventForm = () => {
                     body: JSON.stringify(formData),
                 });
                 if (!response.ok) {
-                    throw new Error('Failed to update event');
+                    showErrorBanner('Failed to update event');
+                    return;
                 }
-                console.log('Event updated successfully');
+                showSuccessBanner('Event updated successfully');
             }
 
             setFormData(initialFormData);
             handleClose();
             setLoading(false);
         } catch (error) {
-            console.error('Error:', error);
+            showErrorBanner('Error:', error);
             handleClose();
             setLoading(false);
         }
@@ -163,6 +181,7 @@ const EventForm = () => {
     return (
         <Grid sx={{ marginTop: '1rem'}}>
             <form onSubmit={handleSubmit} encType="multipart/form-data">
+           
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         {
@@ -272,7 +291,10 @@ const EventForm = () => {
                             </FormControl>
                         </FormGroup>
                     </Grid>
-                    <Grid item xs={12} sm={12}>
+                    <Grid item xs={12} sm={6}>
+                        <AddressAutoComplete formData={formData} setFormData={setFormData} prevSave={prevSaveAddr} />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
                         <FormGroup>
                             <FormControl fullWidth>
                                 <FormLabel required>Description</FormLabel>
@@ -290,6 +312,7 @@ const EventForm = () => {
                             </FormControl>
                         </FormGroup>
                     </Grid>
+
                     <Grid item xs={12} sx={{ textAlign: 'right', mt: 2 }}>
                         <Button variant="outlined" sx={{ mr: 2 }} onClick={handleClose}>
                             Cancel

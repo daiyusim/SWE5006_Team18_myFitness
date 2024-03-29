@@ -27,5 +27,7 @@ namespace myFitness.Models
 
         [BsonElement("createdOn")]
         public DateTime CreatedOn { get; set; }
+
+        public Profile? Profile { get; set; }
     }
 }

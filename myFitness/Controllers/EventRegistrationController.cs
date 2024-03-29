@@ -6,11 +6,11 @@ namespace myFitness.Controllers
 {
     [Route("api/registration")]
     [ApiController]
-    public class RegistrationController : ControllerBase
+    public class EventRegistrationController : ControllerBase
     {
-        private readonly IRegistrationServices _regisServices;
+        private readonly IEventRegistrationServices _regisServices;
 
-        public RegistrationController(IRegistrationServices regisServices)
+        public EventRegistrationController(IEventRegistrationServices regisServices)
         {
             _regisServices = regisServices;
         }
@@ -18,11 +18,11 @@ namespace myFitness.Controllers
 
         // GET: api/registration
         [HttpGet]
-        public async Task<List<Registration>> Get() => await _regisServices.GetAsync();
+        public async Task<List<EventRegistration>> Get() => await _regisServices.GetAsync();
 
         // POST api/registration
         [HttpPost]
-        public async Task<ActionResult<Registration>> Post(Registration ev)
+        public async Task<ActionResult<EventRegistration>> Post(EventRegistration ev)
         {
             await _regisServices.CreateAsync(ev);
             return CreatedAtAction(nameof(Get), new { id = ev.Id }, ev);

@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Button, Box, Typography, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, FormControlLabel, Checkbox } from '@mui/material';
 import { useLoading } from '../shared/LoadingContext';
 import axios from 'axios';
+import { useBanner } from "../Banner/BannerContext";
 
 const AttendanceForm = ({ open, handleClose, id }) => {
     const { setLoading } = useLoading();
     const [attendance, setAttendance] = useState({});
-    const [event, setEvent] = useState(null);
+    const [events, setEvent] = useState(null);
+    const { showSuccessBanner, showErrorBanner } = useBanner();
     const styleBtn = {
         fontSize: '1rem',
         textTransform: 'none',
@@ -46,24 +48,27 @@ const AttendanceForm = ({ open, handleClose, id }) => {
 
 
     useEffect(() => {
-        if (event && event.registrations) {
+        if (events && events.registrations) {
             const initialAttendance = {};
-            event.registrations.forEach(registration => {
+            events.registrations.forEach(registration => {
                 initialAttendance[registration.userId] = registration.attendance ? registration.attendance.isAttended : false;
             });
             setAttendance(initialAttendance);
         }
-    }, [event]);
+    }, [events]);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (event) => {
+        event.preventDefault();
         try {
-            const attendanceData = event.registrations.map(registration => ({
+            const attendanceData = events.registrations.map(registration => ({
                 userId: registration.userId,
-                eventId: event.id,
+                eventId: events.id,
                 isAttended: attendance[registration.userId] || false, // If not checked, default to false
                 createdOn: new Date().toISOString()
             }));
             await axios.post('/api/attendance', attendanceData);
+            showSuccessBanner("Attendance Saved");
+            handleClose();
         } catch (error) {
             console.error('Error submitting attendance:', error);
         }
@@ -83,7 +88,7 @@ const AttendanceForm = ({ open, handleClose, id }) => {
             }}
         >
             <>
-                {event && (
+                {events && (
                     <Box
                         sx={{
                             width: '80vh',
@@ -95,7 +100,7 @@ const AttendanceForm = ({ open, handleClose, id }) => {
                         }}
                     >
                         <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold', marginBottom: '1rem' }}>
-                            {event.title} - Attendance Marking
+                            {events.title} - Attendance Marking
                         </Typography>
                         <form onSubmit={handleSubmit} encType="multipart/form-data">
                             <TableContainer>
@@ -107,8 +112,8 @@ const AttendanceForm = ({ open, handleClose, id }) => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {event.registrations && event.registrations.length > 0 ? (
-                                            event.registrations.map((registration) => (
+                                        {events.registrations && events.registrations.length > 0 ? (
+                                            events.registrations.map((registration) => (
                                                 <TableRow key={registration.userId}>
                                                     <TableCell>{registration.user && registration.user.name}</TableCell>
                                                     <TableCell>
