@@ -1,4 +1,6 @@
 name: Build CI
+env:
+    CI: false
 
 on:
   push:
