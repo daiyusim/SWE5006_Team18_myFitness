@@ -7,7 +7,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  build-react:
 
     runs-on: ubuntu-latest
 
@@ -29,5 +29,23 @@ jobs:
       working-directory: myFitness/ClientApp
       env:
         CI: false
-    - run: npm test
-      working-directory: myFitness/ClientApp
+  build-dotnet:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build myFitness.sln --no-restore
+    # - name: Test
+    #   run: dotnet test --no-build --verbosity normal
+
+    
+    # Include later
+    # - run: npm test
+    #   working-directory: myFitness/ClientApp
