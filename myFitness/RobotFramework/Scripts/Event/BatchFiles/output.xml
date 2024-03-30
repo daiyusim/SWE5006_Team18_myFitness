@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 2.9 (Python 3.7.3 on win32)" generated="20240330 19:15:20.355">
+<suite id="s1" name="Event" source="C:\Users\daiyu\source\repos\SWE5006_Team18_myFitness\myFitness\RobotFramework\Scripts\Event\Tests\Event.robot">
+<test id="s1-t1" name="As a User, I want to view event">
+<kw name="${BROWSER} IN [ @{BROWSERLIST} ]" type="for">
+<kw name="${BROWSER} = firefox" type="foritem">
+<kw name="Given Host Is Opened" library="common">
+<arguments>
+<arg>${BROWSER}</arg>
+<arg>${HOST}</arg>
+</arguments>
+<kw name="Open MyFitness" library="common">
+<arguments>
+<arg>${BROWSER}</arg>
+<arg>${HOST}</arg>
+</arguments>
+<kw name="Open Browser" library="Selenium2Library">
+<doc>Opens a new browser instance to the given ``url``.</doc>
+<arguments>
+<arg>${ENV}</arg>
+<arg>${BROWSER}</arg>
+</arguments>
+<msg timestamp="20240330 19:15:20.523" level="INFO">Opening browser 'firefox' to base url 'https://localhost:44482/'.</msg>
+<status status="PASS" starttime="20240330 19:15:20.522" endtime="20240330 19:15:26.118"></status>
+</kw>
+<kw name="Check Browser" library="common">
+<kw name="Wait For Condition" library="Selenium2Library">
+<doc>Waits until ``condition`` is true or ``timeout`` expires.</doc>
+<arguments>
+<arg>return document.readyState=="complete"</arg>
+</arguments>
+<status status="PASS" starttime="20240330 19:15:26.120" endtime="20240330 19:15:26.133"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:26.120" endtime="20240330 19:15:26.133"></status>
+</kw>
+<kw name="Maximize Browser Window" library="Selenium2Library">
+<doc>Maximizes current browser window.</doc>
+<status status="PASS" starttime="20240330 19:15:26.133" endtime="20240330 19:15:26.404"></status>
+</kw>
+<kw name="Set Selenium Speed" library="Selenium2Library">
+<doc>Sets the delay that is waited after each Selenium command.</doc>
+<arguments>
+<arg>0.1 seconds</arg>
+</arguments>
+<status status="PASS" starttime="20240330 19:15:26.404" endtime="20240330 19:15:26.405"></status>
+</kw>
+<kw name="Set Selenium Timeout" library="Selenium2Library">
+<doc>Sets the timeout that is used by various keywords.</doc>
+<arguments>
+<arg>15 seconds</arg>
+</arguments>
+<status status="PASS" starttime="20240330 19:15:26.405" endtime="20240330 19:15:26.514"></status>
+</kw>
+<kw name="Check Browser" library="common">
+<kw name="Wait For Condition" library="Selenium2Library">
+<doc>Waits until ``condition`` is true or ``timeout`` expires.</doc>
+<arguments>
+<arg>return document.readyState=="complete"</arg>
+</arguments>
+<status status="PASS" starttime="20240330 19:15:26.515" endtime="20240330 19:15:26.623"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:26.515" endtime="20240330 19:15:26.623"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:20.522" endtime="20240330 19:15:26.623"></status>
+</kw>
+<kw name="Check Browser" library="common">
+<kw name="Wait For Condition" library="Selenium2Library">
+<doc>Waits until ``condition`` is true or ``timeout`` expires.</doc>
+<arguments>
+<arg>return document.readyState=="complete"</arg>
+</arguments>
+<status status="PASS" starttime="20240330 19:15:26.624" endtime="20240330 19:15:26.732"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:26.623" endtime="20240330 19:15:26.732"></status>
+</kw>
+<kw name="Check Browser" library="common">
+<kw name="Wait For Condition" library="Selenium2Library">
+<doc>Waits until ``condition`` is true or ``timeout`` expires.</doc>
+<arguments>
+<arg>return document.readyState=="complete"</arg>
+</arguments>
+<status status="PASS" starttime="20240330 19:15:26.733" endtime="20240330 19:15:26.840"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:26.732" endtime="20240330 19:15:26.840"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>${LONGPAUSE}</arg>
+</arguments>
+<msg timestamp="20240330 19:15:41.853" level="INFO">Slept 15 seconds</msg>
+<status status="PASS" starttime="20240330 19:15:26.840" endtime="20240330 19:15:41.853"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:20.522" endtime="20240330 19:15:41.854"></status>
+</kw>
+<kw name="And Accesses Event via Navmenu" library="Event_Common">
+<kw name="click" library="seleniumLibrary">
+<arguments>
+<arg>${eventMenuIcon}</arg>
+</arguments>
+<kw name="Click Element" library="Selenium2Library">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${element}</arg>
+</arguments>
+<msg timestamp="20240330 19:15:41.856" level="INFO">Clicking element 'link=Events'.</msg>
+<status status="PASS" starttime="20240330 19:15:41.856" endtime="20240330 19:15:42.397"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:41.855" endtime="20240330 19:15:42.398"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:41.855" endtime="20240330 19:15:42.398"></status>
+</kw>
+<kw name="And Exit MyFitness" library="common">
+<kw name="Go Page Top" library="common">
+<kw name="Execute Javascript" library="Selenium2Library">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>window.scrollTo(0, 0);</arg>
+</arguments>
+<msg timestamp="20240330 19:15:42.400" level="INFO">Executing JavaScript:
+window.scrollTo(0, 0);</msg>
+<status status="PASS" starttime="20240330 19:15:42.400" endtime="20240330 19:15:42.520"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:42.399" endtime="20240330 19:15:42.520"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>${LONGSLEEP}</arg>
+</arguments>
+<msg timestamp="20240330 19:15:47.520" level="INFO">Slept 5 seconds</msg>
+<status status="PASS" starttime="20240330 19:15:42.520" endtime="20240330 19:15:47.521"></status>
+</kw>
+<kw name="Close Browser" library="Selenium2Library">
+<doc>Closes the current browser.</doc>
+<status status="PASS" starttime="20240330 19:15:47.521" endtime="20240330 19:15:48.294"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:42.398" endtime="20240330 19:15:48.294"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:20.522" endtime="20240330 19:15:48.296"></status>
+</kw>
+<kw name="${BROWSER} = chrome" type="foritem">
+<kw name="Given Host Is Opened" library="common">
+<arguments>
+<arg>${BROWSER}</arg>
+<arg>${HOST}</arg>
+</arguments>
+<kw name="Open MyFitness" library="common">
+<arguments>
+<arg>${BROWSER}</arg>
+<arg>${HOST}</arg>
+</arguments>
+<kw name="Open Browser" library="Selenium2Library">
+<doc>Opens a new browser instance to the given ``url``.</doc>
+<arguments>
+<arg>${ENV}</arg>
+<arg>${BROWSER}</arg>
+</arguments>
+<msg timestamp="20240330 19:15:48.298" level="INFO">Opening browser 'chrome' to base url 'https://localhost:44482/'.</msg>
+<status status="PASS" starttime="20240330 19:15:48.297" endtime="20240330 19:15:50.767"></status>
+</kw>
+<kw name="Check Browser" library="common">
+<kw name="Wait For Condition" library="Selenium2Library">
+<doc>Waits until ``condition`` is true or ``timeout`` expires.</doc>
+<arguments>
+<arg>return document.readyState=="complete"</arg>
+</arguments>
+<status status="PASS" starttime="20240330 19:15:50.767" endtime="20240330 19:15:50.879"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:50.767" endtime="20240330 19:15:50.879"></status>
+</kw>
+<kw name="Maximize Browser Window" library="Selenium2Library">
+<doc>Maximizes current browser window.</doc>
+<status status="PASS" starttime="20240330 19:15:50.880" endtime="20240330 19:15:51.111"></status>
+</kw>
+<kw name="Set Selenium Speed" library="Selenium2Library">
+<doc>Sets the delay that is waited after each Selenium command.</doc>
+<arguments>
+<arg>0.1 seconds</arg>
+</arguments>
+<status status="PASS" starttime="20240330 19:15:51.111" endtime="20240330 19:15:51.112"></status>
+</kw>
+<kw name="Set Selenium Timeout" library="Selenium2Library">
+<doc>Sets the timeout that is used by various keywords.</doc>
+<arguments>
+<arg>15 seconds</arg>
+</arguments>
+<status status="PASS" starttime="20240330 19:15:51.112" endtime="20240330 19:15:51.219"></status>
+</kw>
+<kw name="Check Browser" library="common">
+<kw name="Wait For Condition" library="Selenium2Library">
+<doc>Waits until ``condition`` is true or ``timeout`` expires.</doc>
+<arguments>
+<arg>return document.readyState=="complete"</arg>
+</arguments>
+<status status="PASS" starttime="20240330 19:15:51.221" endtime="20240330 19:15:51.329"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:51.221" endtime="20240330 19:15:51.329"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:48.297" endtime="20240330 19:15:51.329"></status>
+</kw>
+<kw name="Check Browser" library="common">
+<kw name="Wait For Condition" library="Selenium2Library">
+<doc>Waits until ``condition`` is true or ``timeout`` expires.</doc>
+<arguments>
+<arg>return document.readyState=="complete"</arg>
+</arguments>
+<status status="PASS" starttime="20240330 19:15:51.330" endtime="20240330 19:15:51.438"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:51.329" endtime="20240330 19:15:51.438"></status>
+</kw>
+<kw name="Check Browser" library="common">
+<kw name="Wait For Condition" library="Selenium2Library">
+<doc>Waits until ``condition`` is true or ``timeout`` expires.</doc>
+<arguments>
+<arg>return document.readyState=="complete"</arg>
+</arguments>
+<status status="PASS" starttime="20240330 19:15:51.439" endtime="20240330 19:15:51.548"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:51.438" endtime="20240330 19:15:51.548"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>${LONGPAUSE}</arg>
+</arguments>
+<msg timestamp="20240330 19:16:06.561" level="INFO">Slept 15 seconds</msg>
+<status status="PASS" starttime="20240330 19:15:51.549" endtime="20240330 19:16:06.561"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:48.296" endtime="20240330 19:16:06.562"></status>
+</kw>
+<kw name="And Accesses Event via Navmenu" library="Event_Common">
+<kw name="click" library="seleniumLibrary">
+<arguments>
+<arg>${eventMenuIcon}</arg>
+</arguments>
+<kw name="Click Element" library="Selenium2Library">
+<doc>Click element identified by ``locator``.</doc>
+<arguments>
+<arg>${element}</arg>
+</arguments>
+<msg timestamp="20240330 19:16:06.564" level="INFO">Clicking element 'link=Events'.</msg>
+<status status="PASS" starttime="20240330 19:16:06.563" endtime="20240330 19:16:06.871"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:16:06.563" endtime="20240330 19:16:06.871"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:16:06.562" endtime="20240330 19:16:06.872"></status>
+</kw>
+<kw name="And Exit MyFitness" library="common">
+<kw name="Go Page Top" library="common">
+<kw name="Execute Javascript" library="Selenium2Library">
+<doc>Executes the given JavaScript code.</doc>
+<arguments>
+<arg>window.scrollTo(0, 0);</arg>
+</arguments>
+<msg timestamp="20240330 19:16:06.873" level="INFO">Executing JavaScript:
+window.scrollTo(0, 0);</msg>
+<status status="PASS" starttime="20240330 19:16:06.873" endtime="20240330 19:16:06.981"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:16:06.872" endtime="20240330 19:16:06.982"></status>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>${LONGSLEEP}</arg>
+</arguments>
+<msg timestamp="20240330 19:16:11.993" level="INFO">Slept 5 seconds</msg>
+<status status="PASS" starttime="20240330 19:16:06.982" endtime="20240330 19:16:11.993"></status>
+</kw>
+<kw name="Close Browser" library="Selenium2Library">
+<doc>Closes the current browser.</doc>
+<status status="PASS" starttime="20240330 19:16:11.994" endtime="20240330 19:16:14.139"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:16:06.872" endtime="20240330 19:16:14.139"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:48.296" endtime="20240330 19:16:14.139"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:20.521" endtime="20240330 19:16:14.139"></status>
+</kw>
+<status status="PASS" starttime="20240330 19:15:20.521" endtime="20240330 19:16:14.140" critical="yes"></status>
+</test>
+<doc>A test suite to User based on parameters provided.</doc>
+<status status="PASS" starttime="20240330 19:15:20.357" endtime="20240330 19:16:14.141"></status>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="0">Critical Tests</stat>
+<stat pass="1" fail="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="1" fail="0" id="s1" name="Event">Event</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
