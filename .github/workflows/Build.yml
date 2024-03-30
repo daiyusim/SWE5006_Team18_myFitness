@@ -1,6 +1,4 @@
 name: Build CI
-env:
-    CI: false
 
 on:
   push:
@@ -29,5 +27,7 @@ jobs:
       working-directory: myFitness/ClientApp
     - run: npm run build --if-present
       working-directory: myFitness/ClientApp
+      env:
+        CI: false
     - run: npm test
       working-directory: myFitness/ClientApp
