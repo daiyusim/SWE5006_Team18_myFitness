@@ -28,6 +28,15 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\src\components\redux\" />
+    <Folder Include="RobotFramework\Helper\" />
+    <Folder Include="RobotFramework\Scripts\Attendance\BatchFiles\" />
+    <Folder Include="RobotFramework\Scripts\Attendance\Tests\" />
+    <Folder Include="RobotFramework\Scripts\Event\BatchFiles\" />
+    <Folder Include="RobotFramework\Scripts\Event\Tests\" />
+    <Folder Include="RobotFramework\Scripts\Profile\BatchFiles\" />
+    <Folder Include="RobotFramework\Scripts\Profile\Tests\" />
+    <Folder Include="RobotFramework\Scripts\Workout\BatchFiles\" />
+    <Folder Include="RobotFramework\Scripts\Workout\Tests\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
