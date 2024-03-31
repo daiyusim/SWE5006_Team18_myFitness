@@ -1,0 +1,87 @@
+.fc .fc-toolbar-title {
+    font-size: 18px;
+  }
+  
+  .fc .fc-button {
+    font-size: 10px;
+    padding: 6px 9px;
+  }
+  
+  .fc .fc-daygrid-day-number {
+    font-size: 12px;
+  }
+  
+  .fc .fc-event-title {
+    font-size: 8px;
+  }
+
+  @media (max-width: 768px) {
+    .fc .fc-toolbar-title {
+      font-size: 14px; 
+    }
+  }
+
+  .fc .fc-day-table td {
+    width: 14.28%;
+  }
+  
+.fc .fc-daygrid-day {
+    height: 100px; 
+    padding: 0; 
+    border-spacing: 0; 
+  }
+  
+  .fc .fc-daygrid-event {
+    margin: 2px;
+    padding: 4px 6px; 
+    font-size: 10px; 
+  }
+  
+  .fc .fc-toolbar {
+    height: 50px; 
+  }
+
+  .fc-daygrid-event-dot {
+    margin: 0px;
+  }
+
+  .custom-calendar-container {
+    width: 100%;
+    max-width: 1200px;
+  }
+  
+  @media (max-width: 768px) {
+    .custom-calendar-container {
+      max-width: 100%;
+    }
+  }
+
+  .card-container {
+    perspective: 1000px;
+  }
+  
+  .card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+  }
+  
+  .card-container:hover .card-inner {
+    transform: rotateY(180deg);
+  }
+  
+  .card-front, .card-back {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden; 
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .card-back {
+    transform: rotateY(180deg);
+  }
+  
