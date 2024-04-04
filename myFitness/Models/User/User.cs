@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System;
 
 namespace myFitness.Models
 {
@@ -27,7 +28,13 @@ namespace myFitness.Models
 
         [BsonElement("createdOn")]
         public DateTime CreatedOn { get; set; }
-
         public Profile? Profile { get; set; }
+
+
+        public User()
+        {
+            CreatedBy = 1;
+            CreatedOn = DateTime.Now;
+        }
     }
 }

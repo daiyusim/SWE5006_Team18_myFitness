@@ -14,9 +14,15 @@ namespace myFitness.Services
 
         public UserServices(IOptions<DatabaseSettings> settings)
         {
-           var mongoClient = new MongoClient(settings.Value.Connection);
-           var mongoDb = mongoClient.GetDatabase(settings.Value.DatabaseName);
-           _userCollection = mongoDb.GetCollection<User>(settings.Value.Users);
+            var mongoClient = new MongoClient(settings.Value.Connection);
+            var mongoDb = mongoClient.GetDatabase(settings.Value.DatabaseName);
+            _userCollection = mongoDb.GetCollection<User>(settings.Value.Users);
+            var indexKeys = Builders<User>.IndexKeys.Combine(
+             Builders<User>.IndexKeys.Ascending(u => u.Contact),
+             Builders<User>.IndexKeys.Ascending(u => u.EmailAddress));
+            var indexOptions = new CreateIndexOptions { Unique = true };
+            var indexModel = new CreateIndexModel<User>(indexKeys, indexOptions);
+            _userCollection.Indexes.CreateOne(indexModel);
             _profileCollection = mongoDb.GetCollection<Profile>(settings.Value.Profile);
         }
 
@@ -36,6 +42,17 @@ namespace myFitness.Services
             userObj.Profile = profile;
             return userObj;
         }
+        public async Task<User> GetbyEmail(string email)
+        {
+            var userObj = await _userCollection.Find<User>(e => e.EmailAddress == email).FirstOrDefaultAsync();
+
+            if (userObj == null)
+            {
+                throw new ArgumentException("User not found");
+            }
+            return userObj;
+
+        }
         public async Task CreateAsync(User newUser) =>
             await _userCollection.InsertOneAsync(newUser);
 
@@ -43,7 +60,7 @@ namespace myFitness.Services
         public async Task UpdateAsync(string id, User updateUser) =>
               await _userCollection.ReplaceOneAsync(x => x.Id == id, updateUser);
 
-        public async Task RemoveAsync(string id)=>
-            await _userCollection.DeleteOneAsync(x=> x.Id == id);
+        public async Task RemoveAsync(string id) =>
+            await _userCollection.DeleteOneAsync(x => x.Id == id);
     }
 }

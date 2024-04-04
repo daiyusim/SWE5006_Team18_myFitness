@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace myFitness.UnitTest.WebAPI
 {
@@ -14,12 +15,17 @@ namespace myFitness.UnitTest.WebAPI
     {
         private UserController _controller;
         private Mock<IUserServices> _mockUserServices;
+        private IConfiguration _configuration;
 
         [SetUp]
         public void Setup()
         {
             _mockUserServices = new Mock<IUserServices>();
-            _controller = new UserController(_mockUserServices.Object);
+            // Set up ConfigurationBuilder
+            var configBuilder = new ConfigurationBuilder();
+            configBuilder.AddJsonFile("appsettings.json");
+            _configuration = configBuilder.Build();
+            _controller = new UserController(_mockUserServices.Object, _configuration);
         }
 
         [Test]
@@ -43,12 +49,12 @@ namespace myFitness.UnitTest.WebAPI
         [Test]
         public void GetUserByUserId_WithValidId_ReturnsUser()
         {
-         
+
             string userId = "validUserId";
             var expectedUser = new User { Id = userId, Name = "Test User" };
             _mockUserServices.Setup(services => services.Get(userId)).Returns(expectedUser);
 
-          
+
             var result = _controller.GetUserByUserId(userId);
 
             Assert.IsInstanceOf<User>(result);
@@ -57,13 +63,13 @@ namespace myFitness.UnitTest.WebAPI
         [Test]
         public void GetUserByUserId_WithInvalidId_ReturnsNotFound()
         {
-     
+
             string invalidUserId = "invalidUserId";
             _mockUserServices.Setup(services => services.Get(invalidUserId)).Returns((User)null);
 
             var result = _controller.GetUserByUserId(invalidUserId);
 
-        
+
             Assert.IsNull(result);
         }
     }
