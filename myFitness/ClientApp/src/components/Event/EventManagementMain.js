@@ -65,6 +65,7 @@ export const EventManagementMain = () => {
         setAnchorEl(null);
     };
     const fetchEvents = () => {
+        const UserId = '6602f019cc013fe8b77e6bc5'; // hardcode first, later use persistent userid
         setLoading(true);
         fetch("api/event")
             .then(r => r.json())
@@ -75,7 +76,12 @@ export const EventManagementMain = () => {
                     endDateTime: dayjs(event.endDateTime).format('DD/MM/YYYY HH:mm'),
                     registrationEndDate: dayjs(event.registrationEndDate).format('DD/MM/YYYY HH:mm'),
                 }));
-                setEvents(formattedEvents);
+
+                const filteredEvents = formattedEvents.filter(event => {
+                    return !event.registrations.some(registration => registration.userId === UserId);
+                });
+
+                setEvents(filteredEvents);
             })
             .catch(e => console.log("Error fetching events", e))
             .finally(() => setLoading(false));

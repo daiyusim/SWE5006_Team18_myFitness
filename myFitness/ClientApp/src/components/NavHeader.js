@@ -14,10 +14,10 @@ const NavLinkWrapper = styled(Box)(({ theme, isActive }) => ({
 }));
 
 const navigationLinks = [
-  { icon: faUser, name: "Profile", url: BaseRoutes.Profile },
-  { icon: faCalendarCheck, name: "Events", url: BaseRoutes.Event },
   { icon: faDumbbell, name: "Workouts", url: BaseRoutes.Workout },
+  { icon: faCalendarCheck, name: "Events", url: BaseRoutes.Event },
   { icon: faClock, name: "Attendance", url: BaseRoutes.Attendance },
+  { icon: faUser, name: "Profile", url: BaseRoutes.Profile }
 ];
 
 const NavHeader = () => {

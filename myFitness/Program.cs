@@ -12,9 +12,7 @@ builder.Services.Configure<DatabaseSettings>(
 
 builder.Services.AddSingleton<IEventServices, EventServices>();
 builder.Services.AddSingleton<IEventRegistrationServices, EventRegistrationServices>();
-builder.Services.AddSingleton<IEventRatingServices, EventRatingServices>();
 builder.Services.AddSingleton<IUserServices, UserServices>();
-builder.Services.AddSingleton<IAttendanceServices, AttendanceServices>();
 builder.Services.AddSingleton<IProfileServices, ProfileServices>();
 
 builder.Services.AddControllersWithViews();

@@ -22,16 +22,18 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="RobotFramework\Scripts\Attendance\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="RobotFramework\Scripts\Attendance\**" />
+    <EmbeddedResource Remove="RobotFramework\Scripts\Attendance\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="RobotFramework\Scripts\Attendance\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="ClientApp\src\components\redux\" />
     <Folder Include="RobotFramework\Helper\" />
-    <Folder Include="RobotFramework\Scripts\Attendance\BatchFiles\" />
-    <Folder Include="RobotFramework\Scripts\Attendance\Tests\" />
     <Folder Include="RobotFramework\Scripts\Event\BatchFiles\" />
     <Folder Include="RobotFramework\Scripts\Event\Tests\" />
     <Folder Include="RobotFramework\Scripts\Profile\BatchFiles\" />

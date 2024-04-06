@@ -58,5 +58,46 @@ namespace myFitness.UnitTest.WebAPI
             Assert.AreEqual(eventRegistration, createdAtActionResult.Value);
         }
 
+
+       [Test]
+        public async Task SubmitAttendance_Success_ReturnsOk()
+        {
+            // Arrange
+            var attendances = new List<EventRegistration> { new EventRegistration(), new EventRegistration() };
+            _mockEventRegistrationServices.Setup(services => services.SubmitAttendance(attendances)).ReturnsAsync(true);
+
+            // Act
+            var result = await _controller.SubmitAttendance(attendances);
+
+            // Assert
+            Assert.IsInstanceOf<OkResult>(result);
+        }
+
+        [Test]
+        public async Task SubmitAttendance_Failure_ReturnsStatusCode500()
+        {
+            var attendances = new List<EventRegistration> { new EventRegistration(), new EventRegistration() };
+            _mockEventRegistrationServices.Setup(services => services.SubmitAttendance(attendances)).ReturnsAsync(false);
+
+            var result = await _controller.SubmitAttendance(attendances);
+
+            Assert.IsInstanceOf<ObjectResult>(result);
+            var objectResult = result as ObjectResult;
+            Assert.AreEqual(500, objectResult.StatusCode);
+        }
+
+        [Test]
+        public async Task SubmitAttendance_Exception_ReturnsStatusCode500()
+        {
+            var attendances = new List<EventRegistration> { new EventRegistration(), new EventRegistration() };
+            _mockEventRegistrationServices.Setup(services => services.SubmitAttendance(attendances)).ThrowsAsync(new Exception("Test exception"));
+
+            var result = await _controller.SubmitAttendance(attendances);
+
+            Assert.IsInstanceOf<ObjectResult>(result);
+            var objectResult = result as ObjectResult;
+            Assert.AreEqual(500, objectResult.StatusCode);
+        }
+
     }
 }

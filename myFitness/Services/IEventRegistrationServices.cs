@@ -11,5 +11,9 @@ namespace myFitness.Services
         Task CreateAsync(EventRegistration newRegistration);
         Task UpdateAsync(string id, EventRegistration updateRegistration);
         Task RemoveAsync(string id);
+
+        Task<bool> SubmitAttendance(List<EventRegistration> attendances);
+
+        Task<Dashboard> GetActivitiesByUserId(string userId);
     }
 }
