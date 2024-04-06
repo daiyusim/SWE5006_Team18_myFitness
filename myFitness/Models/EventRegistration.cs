@@ -27,6 +27,8 @@ namespace myFitness.Models
         [BsonElement("isAttended")]
         public bool? IsAttended { get; set; }
         public User? User { get; set; }
+        public Event? Event { get; set; }
+
 
     }
 }

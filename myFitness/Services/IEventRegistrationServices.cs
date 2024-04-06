@@ -13,5 +13,7 @@ namespace myFitness.Services
         Task RemoveAsync(string id);
 
         Task<bool> SubmitAttendance(List<EventRegistration> attendances);
+
+        Task<Dashboard> GetActivitiesByUserId(string userId);
     }
 }

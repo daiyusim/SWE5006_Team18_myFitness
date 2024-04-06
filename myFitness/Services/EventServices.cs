@@ -28,8 +28,22 @@ namespace myFitness.Services
             _registrationCollection = mongoDb.GetCollection<EventRegistration>(settings.Value.Registration);
         }
 
-        public async Task<List<Event>> GetAsync() => await _eventCollection.Find(_ => true).ToListAsync();
-        
+        public async Task<List<Event>> GetAsync()
+        {
+            var events = await _eventCollection.Find(_ => true).ToListAsync();
+
+            foreach (var eventObj in events)
+            {
+                var registrations =  _registrationCollection.AsQueryable()
+                    .Where(r => r.EventId == eventObj.Id)
+                    .ToList();
+
+                eventObj.Registrations = registrations;
+            }
+
+            return events;
+        }
+
         public async Task<Event> GetAsync(string id) =>
             await _eventCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 

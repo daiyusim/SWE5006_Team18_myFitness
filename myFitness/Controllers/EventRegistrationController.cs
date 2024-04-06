@@ -20,6 +20,13 @@ namespace myFitness.Controllers
         [HttpGet]
         public async Task<List<EventRegistration>> Get() => await _regisServices.GetAsync();
 
+
+        [HttpGet("activities/{userId:length(24)}")]
+        public Task<Dashboard> GetActivitiesByUserId(string userId)
+        {
+            return _regisServices.GetActivitiesByUserId(userId);
+        }
+
         // POST api/registration
         [HttpPost]
         public async Task<ActionResult<EventRegistration>> Post(EventRegistration ev)
