@@ -61,12 +61,13 @@ const AttendanceForm = ({ open, handleClose, id }) => {
         event.preventDefault();
         try {
             const attendanceData = events.registrations.map(registration => {
-                const data = {
+                const isAttended = attendance[registration.userId] || false;
+                const status = isAttended ? "Attended" : "Absent";
+                return {
                     ...registration,
-                    isAttended: attendance[registration.userId] || false
+                    status: status,
+                    isAttended: isAttended
                 };
-
-                return data;
             });
             console.log(attendanceData);
             await axios.put('/api/registration', attendanceData);
