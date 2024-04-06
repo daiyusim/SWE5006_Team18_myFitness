@@ -51,7 +51,7 @@ const AttendanceForm = ({ open, handleClose, id }) => {
         if (events && events.registrations) {
             const initialAttendance = {};
             events.registrations.forEach(registration => {
-                initialAttendance[registration.userId] = registration.attendance ? registration.attendance.isAttended : false;
+                initialAttendance[registration.userId] = registration ? registration.isAttended : false;
             });
             setAttendance(initialAttendance);
         }
@@ -60,13 +60,16 @@ const AttendanceForm = ({ open, handleClose, id }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const attendanceData = events.registrations.map(registration => ({
-                userId: registration.userId,
-                eventId: events.id,
-                isAttended: attendance[registration.userId] || false, // If not checked, default to false
-                createdOn: new Date().toISOString()
-            }));
-            await axios.post('/api/attendance', attendanceData);
+            const attendanceData = events.registrations.map(registration => {
+                const data = {
+                    ...registration,
+                    isAttended: attendance[registration.userId] || false
+                };
+
+                return data;
+            });
+            console.log(attendanceData);
+            await axios.put('/api/registration', attendanceData);
             showSuccessBanner("Attendance Saved");
             handleClose();
         } catch (error) {
@@ -120,7 +123,7 @@ const AttendanceForm = ({ open, handleClose, id }) => {
                                                         <FormControlLabel
                                                             control={<Checkbox
                                                                 onChange={(event) => handleCheckboxChange(registration.userId)(event)}
-                                                                checked={attendance.hasOwnProperty(registration.userId) ? attendance[registration.userId] : registration.attendance?.isAttended || false}
+                                                                checked={attendance.hasOwnProperty(registration.userId) ? attendance[registration.userId] : registration.isAttended || false}
                                                             />}
                                                             label=""
                                                         />

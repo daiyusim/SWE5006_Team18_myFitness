@@ -30,5 +30,22 @@ namespace myFitness.Services
 
         public async Task RemoveAsync(string id)=>
             await _registrationCollection.DeleteOneAsync(x=> x.Id == id);
+
+        public async Task<bool> SubmitAttendance(List<EventRegistration> attendances)
+        {
+            try
+            {
+                foreach (var attendance in attendances)
+                {
+                    await UpdateAsync(attendance.Id, attendance);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

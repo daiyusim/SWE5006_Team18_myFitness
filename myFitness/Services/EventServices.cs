@@ -11,7 +11,6 @@ namespace myFitness.Services
         private readonly IMongoCollection<Event> _eventCollection;
         private readonly IMongoCollection<User> _userCollection;
         private readonly IMongoCollection<EventRegistration> _registrationCollection;
-        private readonly IMongoCollection<Attendance> _attendanceCollection;
 
         // Parameterless constructor
         public EventServices()
@@ -27,7 +26,6 @@ namespace myFitness.Services
             _eventCollection = mongoDb.GetCollection<Event>(settings.Value.Events);
             _userCollection = mongoDb.GetCollection<User>(settings.Value.Users);
             _registrationCollection = mongoDb.GetCollection<EventRegistration>(settings.Value.Registration);
-            _attendanceCollection = mongoDb.GetCollection<Attendance>(settings.Value.Attendance);
         }
 
         public async Task<List<Event>> GetAsync() => await _eventCollection.Find(_ => true).ToListAsync();
@@ -61,7 +59,6 @@ namespace myFitness.Services
             foreach (var registration in registrations)
             {
                 registration.User = _userCollection.Find(u => u.Id == registration.UserId).FirstOrDefault();
-                registration.Attendance = _attendanceCollection.Find(u => u.UserId == registration.UserId && u.EventId == eventId).FirstOrDefault();
             }
 
 

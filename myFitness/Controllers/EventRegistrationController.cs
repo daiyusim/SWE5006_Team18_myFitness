@@ -28,6 +28,23 @@ namespace myFitness.Controllers
             return CreatedAtAction(nameof(Get), new { id = ev.Id }, ev);
         }
 
+        [HttpPut]
+        public async Task<IActionResult> SubmitAttendance(List<EventRegistration> registration)
+        {
+            try
+            {
+                bool success = await _regisServices.SubmitAttendance(registration);
+                if (success)
+                    return Ok();
+                else
+                    return StatusCode(500, "Failed to submit attendance.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
 
     }
 }
