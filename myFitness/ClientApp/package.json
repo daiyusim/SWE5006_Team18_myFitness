@@ -15,6 +15,7 @@
     "@fullcalendar/timegrid": "^6.1.11",
     "@mui/icons-material": "^5.15.12",
     "@mui/material": "^5.15.12",
+    "@reduxjs/toolkit": "^2.2.3",
     "ahooks": "^3.7.10",
     "axios": "^1.6.8",
     "dayjs": "^1.11.10",

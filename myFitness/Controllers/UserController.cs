@@ -1,5 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -38,10 +39,12 @@ namespace myFitness.Controllers
         {
             try
             {
+                string password = userRegisterInput.password;
+                string encryptedPassword = Encrypt(password, "testing12345678Salt");
                 User newUser = new User
                 {
                     EmailAddress = userRegisterInput.email,
-                    Password = userRegisterInput.password,
+                    Password = encryptedPassword,
                     Name = userRegisterInput.name,
                     Contact = userRegisterInput.contact,
                 };
@@ -60,19 +63,52 @@ namespace myFitness.Controllers
             try
             {
                 User user = await _usersServices.GetbyEmail(userLoginInput.email);
-                if (user.Password == userLoginInput.password)
+                string password = user.Password;
+                string userInputPassword = userLoginInput.password;
+                if (VerifyPassword(password, userInputPassword, "testing12345678Salt"))
                 {
                     return Ok(getJwtToken(user.Id));
                 }
                 else
                 {
-                    throw new Exception("Wrong password");
+                    return Unauthorized("Unauthorized");
                 }
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        [HttpPost("verifyJWT")]
+        public async Task<ActionResult> VerifyJWT(UserVerifyJWTInput userVerifyJWTInput)
+        {
+            string jwt = userVerifyJWTInput.jwt;
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = securityKey,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                RequireExpirationTime = true,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            SecurityToken validatedToken;
+            try
+            {
+                tokenHandler.ValidateToken(jwt, validationParameters, out validatedToken);
+                return Ok(true);
+            }
+            catch (SecurityTokenException)
+            {
+                // Token validation failed
+                return Unauthorized(false);
+            }
+
         }
 
         private string getJwtToken(string id)
@@ -83,13 +119,45 @@ namespace myFitness.Controllers
             {
                 new Claim("UserId", id)
             };
-            var Sectoken = new JwtSecurityToken(_configuration["Jwt:Issuer"],
+            var Sectoken = new JwtSecurityToken(
+              _configuration["Jwt:Issuer"],
               _configuration["Jwt:Issuer"],
               claims,
               expires: DateTime.Now.AddMinutes(120),
               signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(Sectoken);
+        }
+        private string Encrypt(string plain, string salt)
+        {
+            string secretKey = _configuration["AuthenticationSecretKey"];
+            string combined = plain + salt;
+            byte[] combinedBytes = Convert.FromBase64String(combined);
+            byte[] secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
+            using (var hmac = new HMACSHA256(secretKeyBytes))
+            {
+                byte[] hash = hmac.ComputeHash(combinedBytes);
+                return Convert.ToBase64String(hash);
+            }
+        }
+        private bool VerifyPassword(string password, string plain, string salt)
+        {
+            try
+            {
+                string encryptedPlain = Encrypt(plain, salt);
+                if (encryptedPlain == password)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
         }
 
     }
