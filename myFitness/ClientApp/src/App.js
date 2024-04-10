@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme.js'
@@ -7,31 +7,26 @@ import MainContainer from './components/MainContainer';
 import NavHeader from './components/NavHeader';
 import NavFooter from './components/NavFooter';
 import Loader from './components/shared/Loader';
-import { Provider } from 'react-redux';
 import './custom.css'
 import { SnackbarProvider } from "notistack";
 import { BannerProvider } from './components/Banner/BannerContext';
 import Banner from './components/Banner/Banner';
 import CssBaseline from '@mui/material/CssBaseline';
-
-/*import store from './Store/Store';*/
+import { useNavigate } from 'react-router-dom';
 import { Grid, Box } from "@mui/material";
-//import { CookiesProvider, useCookies } from 'react-cookies'
 const App = () => {
-    //const [cookies, setCookies, removeCookie] = useCookies(['user'])
-    function handleLogin(user) {
-        var expiryDate = new Date().getDate() + 1
-        //setCookies('user', user, {
-        //    path: '/',
-        //    expires: expiryDate,
-        //    httpOnly: true
-        //})
+    const navigate = useNavigate();
+    const [anchorEl, setAnchorEl] = useState(null);
+    const handleLogout = () => {
+        navigate('/');
+        setAuthenticationToken(false);
+        setAnchorEl(null);
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('roleType');
     }
+    const [authenticationToken, setAuthenticationToken] = useState(false);
 
-    function checkCookies() {
-        // get cookies and decode
-
-    }
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline >
@@ -44,8 +39,8 @@ const App = () => {
                         <LoadingProvider>
                             <Banner />
                             <Loader />
-                            <Grid item md={12} className="nav-header"><NavHeader /></Grid>
-                            <MainContainer item md={12} />
+                            <Grid item md={12} className="nav-header"><NavHeader authenticationToken={authenticationToken}  handleLogout={handleLogout} anchorEl={anchorEl} setAnchorEl={setAnchorEl} /></Grid>
+                            <MainContainer item md={12} authenticationToken={authenticationToken} setAuthenticationToken={setAuthenticationToken} />
                             <Grid item md={12} sx={{ backgroundColor: '#00272B' }}>
                                 <Box display="flex" flexDirection="column" position="relative">
                                     <NavFooter /></Box></Grid>

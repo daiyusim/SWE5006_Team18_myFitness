@@ -1,6 +1,4 @@
 import React from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { Box, Grid, Typography, Divider, TextField, Button, styled } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSmile } from '@fortawesome/free-solid-svg-icons';
@@ -17,29 +15,7 @@ const WelcomeMessage = styled(Typography)({
     }
 });
 
-export const Login = (props) => {
-    const { nextPage } = props;
-
-    // Yup for form validation
-    const loginSchema = Yup.object().shape({
-        email: Yup.string().email('Invalid email').required('Required'),
-        password: Yup.string().required('Required')
-    });
-
-    // Formik hook
-    const formik = useFormik({
-        initialValues: {
-            email: '',
-            password: ''
-        },
-        validationSchema: loginSchema,
-        onSubmit: values => {
-            // make api call or perform other actions
-            console.log(values.email);
-            console.log(values.password);
-        },
-    });
-
+export const Login = ({ formik }) => {
     return (
         <Box
             sx={{
@@ -88,12 +64,12 @@ export const Login = (props) => {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <Button type="submit" variant="contained" sx={{ textTransform: 'none',bgcolor: '#23418B', '&:hover': { bgcolor: '#1a2e5d' } }} fullWidth>
+                            <Button type="submit" variant="contained" sx={{ textTransform: 'none', bgcolor: '#23418B', '&:hover': { bgcolor: '#1a2e5d' } }} fullWidth>
                                 Login
                             </Button>
                         </Grid>
                         <Grid item xs={12}>
-                            <Button type="submit" variant="contained" sx={{ textTransform: 'none',bgcolor: '#23418B', '&:hover': { bgcolor: '#1a2e5d' } }} fullWidth>
+                            <Button type="button" variant="contained" sx={{ textTransform: 'none', bgcolor: '#23418B', '&:hover': { bgcolor: '#1a2e5d' } }} fullWidth>
                                 Register as user
                             </Button>
                         </Grid>
