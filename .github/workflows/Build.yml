@@ -42,9 +42,6 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build myFitness.sln --no-restore
-    - name: Build
-      run: dotnet run
-      working-directory: myFitness/
     # - name: Test
     #   run: dotnet test --no-build --verbosity normal
 
