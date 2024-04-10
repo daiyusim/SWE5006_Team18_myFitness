@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using myFitness.Models;
 using myFitness.Services;
+using Newtonsoft.Json.Linq;
 
 namespace myFitness.Controllers
 {
@@ -62,7 +63,8 @@ namespace myFitness.Controllers
                 User user = await _usersServices.GetbyEmail(userLoginInput.email);
                 if (user.Password == userLoginInput.password)
                 {
-                    return Ok(getJwtToken(user.Id));
+                    return Ok(new { Token = getJwtToken(user.Id), UserId = user.Id, RoleType = user.RoleType });
+           
                 }
                 else
                 {
