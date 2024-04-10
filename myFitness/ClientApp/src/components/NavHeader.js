@@ -39,7 +39,7 @@ const navigationLinks = [
 
 const NavHeader = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [cookies, setCookie, removeCookie] = useCookies("jwt");
+  const [cookies, setCookie, removeCookie] = useCookies();
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);

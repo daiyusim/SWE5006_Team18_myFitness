@@ -54,11 +54,14 @@ export const Login = (props) => {
   // EventHandler
   const onRegisterClick = async (email, password) => {
     // Register user
-    const res = await registerPost({ email, password })
+    var res;
+    await registerPost({ email, password })
       .unwrap()
-      .then((payload) => console.log("Success Register"))
+      .then((payload) => {
+        console.log("Success Register");
+        payload = res;
+      })
       .catch((error) => console.log("Error Register"));
-    console.log(res);
   };
   const onLoginClick = async (email, password) => {
     await loginPost({ email, password })
