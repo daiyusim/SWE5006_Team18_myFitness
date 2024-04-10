@@ -48,7 +48,6 @@ const NavHeader = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
   const handleLogout = () => {
     console.log("Logging out...");
     handleClose();
@@ -68,7 +67,7 @@ const NavHeader = () => {
             {navigationLinks.map((link) => (
               <NavLinkWrapper
                 key={link.name}
-                // isActive={window.location.pathname === link.url}
+                isActive={window.location.pathname === link.url}
               >
                 <Button
                   startIcon={<FontAwesomeIcon icon={link.icon} />}
@@ -84,6 +83,7 @@ const NavHeader = () => {
                 </Button>
               </NavLinkWrapper>
             ))}
+
             <IconButton
               size="large"
               edge="end"

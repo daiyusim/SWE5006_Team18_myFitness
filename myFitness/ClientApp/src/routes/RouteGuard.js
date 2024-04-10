@@ -8,9 +8,7 @@ import ProtectedPage from "../components/ProtectedPage";
 
 const RouteGuard = ({ element, path, ...rest }) => {
   const userId = useSelector(getAppUserIdSelector);
-  console.log("routeguard" + userId);
   const loggedIn = !(isNull(userId) || isEmpty(trim(userId)));
-  console.log("routeguard" + loggedIn);
 
   const isLoginOrRegisterPage =
     element.type.name === "Login" || element.type.name === "Register";

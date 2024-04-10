@@ -25,7 +25,7 @@ import { clearUserId, setUserId } from "./components/redux/appSlice.js";
 import { useVerifyJWTMutation } from "./api/UserApi.js";
 const App = () => {
   const dispatch = useDispatch();
-  const [cookies, setCookie, removeCookie] = useCookies(["jwt"]);
+  const [cookies, setCookie, removeCookie] = useCookies();
   const [
     verifyJWTPost,
     {
@@ -37,12 +37,12 @@ const App = () => {
   ] = useVerifyJWTMutation();
 
   const isCookiesJWTValid = async () => {
-    const token = cookies.jwt;
+    const jwt = cookies.jwt;
     var res = false;
-    if (isNull(token) || isUndefined(token)) {
+    if (isNull(jwt) || isUndefined(jwt)) {
       return res;
     }
-    await verifyJWTPost(token)
+    await verifyJWTPost(jwt)
       .unwrap()
       .then((payload) => {
         res = payload;
@@ -52,17 +52,15 @@ const App = () => {
   };
   const setUserIDandCookies = async () => {
     if (await isCookiesJWTValid()) {
-      const token = cookies.jwt;
-      const jwtInfo = jwtDecode(token);
-      dispatch(setUserId(jwtInfo.UserId));
+      const jwt = cookies.jwt;
+      const jwtInfo = jwtDecode(jwt);
+      dispatch(setUserId(jwtInfo));
       console.log("logged in");
     } else {
       dispatch(clearUserId());
-      removeCookie();
     }
   };
   useEffect(() => {
-    console.log(cookies);
     setUserIDandCookies();
   }, [cookies]);
 

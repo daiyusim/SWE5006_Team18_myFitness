@@ -65,8 +65,9 @@ export const Login = (props) => {
       .unwrap()
       .then((payload) => {
         console.log(payload);
-        setCookies("jwt", payload);
-      });
+        setCookies("jwt", payload.token);
+      })
+      .catch(() => console.log("Unauthorized"));
   };
 
   // Yup for form validation
@@ -84,8 +85,6 @@ export const Login = (props) => {
     validationSchema: loginSchema,
     onSubmit: (values) => {
       // make api call or perform other actions
-      console.log(values.email);
-      console.log(values.password);
       onLoginClick(values.email, values.password);
     },
   });

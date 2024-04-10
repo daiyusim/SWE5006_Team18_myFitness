@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using myFitness.Models;
 using myFitness.Services;
+using Newtonsoft.Json.Linq;
 
 namespace myFitness.Controllers
 {
@@ -67,7 +68,8 @@ namespace myFitness.Controllers
                 string userInputPassword = userLoginInput.password;
                 if (VerifyPassword(password, userInputPassword, "testing12345678Salt"))
                 {
-                    return Ok(getJwtToken(user.Id));
+                    return Ok(new { Token = getJwtToken(user.Id, user.RoleType) });
+
                 }
                 else
                 {
@@ -111,13 +113,14 @@ namespace myFitness.Controllers
 
         }
 
-        private string getJwtToken(string id)
+        private string getJwtToken(string id, string roleType)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {
-                new Claim("UserId", id)
+                new Claim("UserId", id),
+                new Claim("RoleType", roleType)
             };
             var Sectoken = new JwtSecurityToken(
               _configuration["Jwt:Issuer"],

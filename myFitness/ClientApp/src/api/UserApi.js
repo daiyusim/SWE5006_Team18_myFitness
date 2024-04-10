@@ -21,7 +21,6 @@ const userApi = ApiSlice.injectEndpoints({
           email: email,
           password: password,
         },
-        responseHandler: (response) => response.text(),
       }),
     }),
     verifyJWT: builder.mutation({

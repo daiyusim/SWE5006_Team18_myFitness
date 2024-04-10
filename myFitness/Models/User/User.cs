@@ -25,6 +25,8 @@ namespace myFitness.Models
 
         [BsonElement("createdBy")]
         public int CreatedBy { get; set; }
+        [BsonElement("roleType")]
+        public string RoleType { get; set; }
 
         [BsonElement("createdOn")]
         public DateTime CreatedOn { get; set; }

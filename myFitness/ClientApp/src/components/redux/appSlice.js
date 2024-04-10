@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   userId: "",
+  roleType: "",
 };
 
 const AppSlice = createSlice({
@@ -9,10 +10,12 @@ const AppSlice = createSlice({
   initialState,
   reducers: {
     setUserId(state, { payload }) {
-      state.userId = payload;
+      state.userId = payload.UserId;
+      state.roleType = payload.RoleType;
     },
     clearUserId(state) {
       state.userId = "";
+      state.roleType = "";
     },
   },
 });
