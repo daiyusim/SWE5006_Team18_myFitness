@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using myFitness.Filter;
 using myFitness.Models;
 using myFitness.Services;
 using myFitness.Utils;
@@ -35,6 +36,7 @@ namespace myFitness.Controllers
         // GET api/users/{id}
         [HttpGet("{id:length(24)}")]
         [Authorize]
+        [AuthorizeUserId]
         public User GetUserByUserId(string id)
         {
             User us = _usersServices.Get(id);
