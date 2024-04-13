@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using myFitness.Utils;
 
 namespace myFitness.UnitTest.WebAPI
 {
@@ -16,6 +17,7 @@ namespace myFitness.UnitTest.WebAPI
         private UserController _controller;
         private Mock<IUserServices> _mockUserServices;
         private IConfiguration _configuration;
+        private AuthenticationUtils _authenticationUtils;
 
         [SetUp]
         public void Setup()
@@ -25,7 +27,8 @@ namespace myFitness.UnitTest.WebAPI
             var configBuilder = new ConfigurationBuilder();
             configBuilder.AddJsonFile("appsettings.json");
             _configuration = configBuilder.Build();
-            _controller = new UserController(_mockUserServices.Object, _configuration);
+            _authenticationUtils = new AuthenticationUtils(_configuration);
+            _controller = new UserController(_mockUserServices.Object, _configuration, _authenticationUtils);
         }
 
         [Test]

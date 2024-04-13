@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using myFitness.Data;
 using myFitness.Services;
+using myFitness.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.AddSingleton<IEventServices, EventServices>();
 builder.Services.AddSingleton<IEventRegistrationServices, EventRegistrationServices>();
 builder.Services.AddSingleton<IUserServices, UserServices>();
 builder.Services.AddSingleton<IProfileServices, ProfileServices>();
+builder.Services.AddSingleton<AuthenticationUtils>();
 
 builder.Services.AddControllersWithViews();
 // Jwt configuration

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using myFitness.Models;
 using myFitness.Services;
+using myFitness.Utils;
 using Newtonsoft.Json.Linq;
 
 namespace myFitness.Controllers
@@ -17,10 +18,12 @@ namespace myFitness.Controllers
     {
         private readonly IUserServices _usersServices;
         private readonly IConfiguration _configuration;
-        public UserController(IUserServices usersServices, IConfiguration configuration)
+        private readonly AuthenticationUtils _authenticationUtils;
+        public UserController(IUserServices usersServices, IConfiguration configuration, AuthenticationUtils authenticationUtils)
         {
             _usersServices = usersServices;
             _configuration = configuration;
+            _authenticationUtils = authenticationUtils;
         }
 
 
@@ -44,7 +47,7 @@ namespace myFitness.Controllers
             try
             {
                 string password = userRegisterInput.password;
-                string encryptedPassword = Encrypt(password, "testing12345678Salt");
+                string encryptedPassword = _authenticationUtils.Encrypt(password, "testing12345678Salt");
                 User newUser = new User
                 {
                     EmailAddress = userRegisterInput.email,
@@ -69,9 +72,9 @@ namespace myFitness.Controllers
                 User user = await _usersServices.GetbyEmail(userLoginInput.email);
                 string password = user.Password;
                 string userInputPassword = userLoginInput.password;
-                if (VerifyPassword(password, userInputPassword, "testing12345678Salt"))
+                if (_authenticationUtils.VerifyPassword(password, userInputPassword, "testing12345678Salt"))
                 {
-                    return Ok(new { Token = getJwtToken(user.Id) });
+                    return Ok(new { Token = _authenticationUtils.getJwtToken(user.Id) });
 
                 }
                 else
@@ -114,55 +117,6 @@ namespace myFitness.Controllers
                 return Unauthorized(false);
             }
 
-        }
-
-        private string getJwtToken(string id)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var claims = new[]
-            {
-                new Claim("UserId", id),
-            };
-            var Sectoken = new JwtSecurityToken(
-              _configuration["Jwt:Issuer"],
-              _configuration["Jwt:Issuer"],
-              claims,
-              expires: DateTime.Now.AddMinutes(120),
-              signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(Sectoken);
-        }
-        private string Encrypt(string plain, string salt)
-        {
-            string secretKey = _configuration["AuthenticationSecretKey"];
-            string combined = plain + salt;
-            byte[] combinedBytes = Encoding.UTF8.GetBytes(combined);
-            byte[] secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
-            using (var hmac = new HMACSHA256(secretKeyBytes))
-            {
-                byte[] hash = hmac.ComputeHash(combinedBytes);
-                return Convert.ToBase64String(hash);
-            }
-        }
-        private bool VerifyPassword(string password, string plain, string salt)
-        {
-            try
-            {
-                string encryptedPlain = Encrypt(plain, salt);
-                if (encryptedPlain == password)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch
-            {
-                return false;
-            }
         }
 
     }
