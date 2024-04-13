@@ -91,7 +91,11 @@ const EventForm = () => {
             event.currentTarget.reportValidity();
             return;
         }
-
+        if (registrationDateTime.isAfter(startDateTime)) {
+            registrationDateInput.setCustomValidity('Registration end date cannot be after event start date');
+            event.currentTarget.reportValidity();
+            return;
+        }
         setLoading(true);
         try {
             if (isAdd === true) {
