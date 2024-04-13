@@ -1,14 +1,5 @@
 import React, { useState } from "react";
 import { Grid } from "@mui/material";
-import NavMenu from "./NavMenu";
-import EventManagementMain from "./Event/EventManagementMain";
-import EventForm from "./Event/EventForm";
-import WorkoutMain from "./Workout/WorkoutMain";
-import UserProfile from "./Profile/UserProfile";
-import AttendanceMain from "./Attendance/AttendanceMain";
-import Login from "./Login";
-import { BaseRoutes } from "./helper/Routing";
-import { Route, Routes } from "react-router-dom";
 import AppRoutes from "../routes/AppRoutes";
 import { useSelector } from "react-redux";
 import { getAppUserIdSelector } from "./redux/selector";

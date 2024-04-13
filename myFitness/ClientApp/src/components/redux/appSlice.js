@@ -11,7 +11,6 @@ const AppSlice = createSlice({
   reducers: {
     setUserId(state, { payload }) {
       state.userId = payload.UserId;
-      state.roleType = payload.RoleType;
     },
     clearUserId(state) {
       state.userId = "";

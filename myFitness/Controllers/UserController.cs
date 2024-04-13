@@ -68,7 +68,7 @@ namespace myFitness.Controllers
                 string userInputPassword = userLoginInput.password;
                 if (VerifyPassword(password, userInputPassword, "testing12345678Salt"))
                 {
-                    return Ok(new { Token = getJwtToken(user.Id, user.RoleType) });
+                    return Ok(new { Token = getJwtToken(user.Id) });
 
                 }
                 else
@@ -113,14 +113,13 @@ namespace myFitness.Controllers
 
         }
 
-        private string getJwtToken(string id, string roleType)
+        private string getJwtToken(string id)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new[]
             {
                 new Claim("UserId", id),
-                new Claim("RoleType", roleType)
             };
             var Sectoken = new JwtSecurityToken(
               _configuration["Jwt:Issuer"],
@@ -135,7 +134,7 @@ namespace myFitness.Controllers
         {
             string secretKey = _configuration["AuthenticationSecretKey"];
             string combined = plain + salt;
-            byte[] combinedBytes = Convert.FromBase64String(combined);
+            byte[] combinedBytes = Encoding.UTF8.GetBytes(combined);
             byte[] secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
             using (var hmac = new HMACSHA256(secretKeyBytes))
             {
