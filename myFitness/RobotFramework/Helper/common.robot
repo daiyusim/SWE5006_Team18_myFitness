@@ -34,6 +34,12 @@ ${LONGPAUSE}			15 seconds
 ${attendanceMenuIcon}							link=Attendance
 ${profileMenuIcon}								link=Profile
 ${workoutMenuIcon}								link=Workouts
+
+${email}										id=email
+${password}										id=password
+${loginBtn}										xpath=//*[@id="main-container"]/div/div/div/div/form/div/div[3]/button
+
+
 *** Keywords ***
 ######################################################################################
 # Access Methods
@@ -52,11 +58,23 @@ Exit MyFitness
 	Sleep										${LONGSLEEP}
     Close Browser
 
-Host Is Opened
+Login as User 
+	[Arguments]									${BROWSER}					
+	click										${email}
+	Run Keyword If								'${BROWSER}' == 'firefox'				Type			${email}					pz@gmail.com
+	Run Keyword If								'${BROWSER}' == 'chrome'				Type			${email}					tester@test.com				
+	click										${password}	
+	Run Keyword If								'${BROWSER}' == 'firefox'				Type			${password}					Password123!
+	Run Keyword If								'${BROWSER}' == 'chrome'				Type			${password}					Password1@
+	click										${loginBtn}
+	Sleep										${LONGPAUSE}
+
+Host Is Opened and User Logins
 	[Arguments]									${BROWSER}					${HOST}							
 	Open MyFitness  							${BROWSER}					${HOST}
 	Check Browser
-	Check Browser					
+	Check Browser	
+	Login as User								${BROWSER}
 	Sleep										${LONGPAUSE}
 
 ######################################################################################
