@@ -44,8 +44,22 @@ namespace myFitness.Services
             return events;
         }
 
-        public async Task<Event> GetAsync(string id) =>
-            await _eventCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        public async Task<Event> GetAsync(string id)
+        {
+            Event fetchedEvent = await _eventCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+
+            if (fetchedEvent != null)
+            {
+                User createdByUser = await _userCollection.Find(u => u.Id == fetchedEvent.CreatedBy).FirstOrDefaultAsync();
+
+                if (createdByUser != null)
+                {
+                    fetchedEvent.CreatedByName = createdByUser.Name;
+                }
+            }
+
+            return fetchedEvent;
+        }
 
         public async Task CreateAsync(Event newEvent) =>
             await _eventCollection.InsertOneAsync(newEvent);

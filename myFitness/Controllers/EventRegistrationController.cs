@@ -31,7 +31,7 @@ namespace myFitness.Controllers
         [HttpPost]
         public async Task<ActionResult<EventRegistration>> Post(EventRegistration ev)
         {
-            await _regisServices.CreateAsync(ev);
+            await _regisServices.RegisterEvent(ev);
             return CreatedAtAction(nameof(Get), new { id = ev.Id }, ev);
         }
 

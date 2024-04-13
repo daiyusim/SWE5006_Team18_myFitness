@@ -44,7 +44,8 @@ namespace myFitness.Models
         public DateTime CreatedOn { get; set; }
 
         [BsonElement("createdBy")]
-        public int CreatedBy { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string CreatedBy { get; set; }
 
 
         [BsonElement("address")]
@@ -56,5 +57,7 @@ namespace myFitness.Models
         [BsonElement("long")]
         public double Long { get; set; }
         public List<EventRegistration>? Registrations { get; set; }
+
+        public string CreatedByName { get; set; }   
     }
 }

@@ -9,6 +9,9 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useLoading } from "../shared/LoadingContext";
 import DeleteEvent from "./DeleteEvent";
 import RegisterEvent from "./RegisterEvent";
+import { getAppUserIdSelector } from "../redux/selector";
+import { useSelector } from "react-redux";
+
 const categoryColors = {
     All: { backgroundColor: '#FFA500', color: 'white' },
     Workout: { backgroundColor: '#FF5733', color: 'white' },
@@ -27,7 +30,7 @@ export const EventManagementMain = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [showRegisterDialog, setShowRegisterDialog] = useState(false);
-    
+    const userId = useSelector(getAppUserIdSelector);
     const handleClick = (event, eventId, eventName) => {
         setSelectedRowId(eventId);
         setSelectedRowEventName(eventName);
@@ -65,7 +68,6 @@ export const EventManagementMain = () => {
         setAnchorEl(null);
     };
     const fetchEvents = () => {
-        const UserId = '6602f019cc013fe8b77e6bc5'; // hardcode first, later use persistent userid
         setLoading(true);
         fetch("api/event")
             .then(r => r.json())
@@ -78,20 +80,13 @@ export const EventManagementMain = () => {
                 }));
 
                 const filteredEvents = formattedEvents.filter(event => {
-                    return !event.registrations.some(registration => registration.userId === UserId);
+                    return !event.registrations.some(registration => registration.userId === userId);
                 });
 
                 setEvents(filteredEvents);
             })
             .catch(e => console.log("Error fetching events", e))
             .finally(() => setLoading(false));
-    };
-    const styleBtn = {
-        fontSize: '1rem',
-        textTransform: 'none',
-        fontWeight: 'bold',
-        backgroundColor: '#23418B',
-        marginLeft: 'auto'
     };
 
     useEffect(() => {
@@ -231,10 +226,9 @@ export const EventManagementMain = () => {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                <MenuItem onClick={handleShowRegisterDialog}>Register</MenuItem>
-                                {/* set the user access rights after that */}
-                                {event.totalRegistered === 0 && (<MenuItem onClick={handleEditEvent}>Edit</MenuItem>)}
-                                {event.totalRegistered === 0 && (<MenuItem onClick={handleShowDeleteDialog}>Delete</MenuItem>)}
+                                {event.createdBy !== userId && (<MenuItem onClick={handleShowRegisterDialog}>Register</MenuItem>)}
+                                {event.createdBy === userId && (<MenuItem onClick={handleEditEvent}>Edit</MenuItem>)}
+                                {event.createdBy === userId && event.totalRegistered === 0 && (<MenuItem onClick={handleShowDeleteDialog}>Cancel</MenuItem>)}
                             </Menu>
                         </Card>
                     </Grid>

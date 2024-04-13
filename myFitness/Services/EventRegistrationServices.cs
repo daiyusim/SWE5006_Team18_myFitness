@@ -11,13 +11,15 @@ namespace myFitness.Services
         private readonly IMongoCollection<EventRegistration> _registrationCollection;
         private readonly IMongoCollection<Event> _eventCollection;
         private readonly IMongoCollection<Profile> _profileCollection;
-        public EventRegistrationServices(IOptions<DatabaseSettings> settings)
+        private readonly IEventServices _eventServices;
+        public EventRegistrationServices(IOptions<DatabaseSettings> settings, IEventServices eventServices)
         {
             var mongoClient = new MongoClient(settings.Value.Connection);
             var mongoDb = mongoClient.GetDatabase(settings.Value.DatabaseName);
             _registrationCollection = mongoDb.GetCollection<EventRegistration>(settings.Value.Registration);
             _eventCollection = mongoDb.GetCollection<Event>(settings.Value.Events);
             _profileCollection = mongoDb.GetCollection<Profile>(settings.Value.Profile);
+            _eventServices = eventServices;
         }
 
         public async Task<List<EventRegistration>> GetAsync() => await _registrationCollection.Find(_ => true).ToListAsync();
@@ -124,6 +126,19 @@ namespace myFitness.Services
                           Event = @event
                       })
                 .ToList();
+        }
+
+        public async Task RegisterEvent(EventRegistration newRegistration)
+        {
+            var targetEvent = await _eventServices.GetAsync(newRegistration.EventId);
+
+            if (targetEvent != null)
+            {
+                targetEvent.Capacity -= 1;
+                targetEvent.TotalRegistered += 1;
+                await _eventServices.UpdateAsync(targetEvent.Id, targetEvent);
+                await CreateAsync(newRegistration);
+            }
         }
     }
 }
