@@ -49,10 +49,10 @@ const DeleteEvent = ({ open, handleClose, eventId, eventName }) => {
                 }}
             >
                 <Typography id="delete-event-modal-title" variant="h6" component="h2">
-                    Delete {eventName}
+                    Cancel "{eventName}" 
                 </Typography>
                 <Typography id="delete-event-modal-description" sx={{ mt: 2 }}>
-                    Are you sure you want to delete this event?
+                    Are you sure you want to cancel this event?
                 </Typography>
                 <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
                     <Button variant="outlined" sx={{ mr: 2 }} onClick={handleClose}>

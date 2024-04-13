@@ -5,13 +5,15 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { useLoading } from "../shared/LoadingContext";
 import AttendanceForm from "./AttendanceForm";
+import { useSelector } from "react-redux";
+import { getAppUserIdSelector } from "../redux/selector";
 
 export const AttendanceMain = () => {
     const [records, setRecords] = useState(null);
     const [id, setId] = useState(null);
     const { setLoading } = useLoading();
     const [showAttendanceForm, setShowAttendanceForm] = useState(false);
-
+    const userId = useSelector(getAppUserIdSelector);
     const handleEventClick = (eventInfo) => {
         setId(eventInfo.event.id)
         setShowAttendanceForm(true);
@@ -29,13 +31,17 @@ export const AttendanceMain = () => {
             .then(r => r.json())
             .then(res => {
                 console.log(res);
-                const events = res.map(event => ({
+                const filteredEvents = res.filter(event => {
+                    const isRegistered = event.registrations.some(registration => registration.userId === userId);
+                    const createdByCurrentUser = event.createdBy === userId;
+                    return isRegistered || createdByCurrentUser;
+                }).map(event => ({
                     id: event.id,
                     title: event.title,
                     date: event.startDateTime,
                     description: event.description
                 }));
-                setRecords(events);
+                setRecords(filteredEvents);
             })
             .catch(e => console.log("Error fetching events", e))
             .finally(() => setLoading(false));

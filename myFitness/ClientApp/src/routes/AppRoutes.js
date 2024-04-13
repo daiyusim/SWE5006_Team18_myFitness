@@ -51,8 +51,8 @@ const AppRoutes = () => {
       /> */}
       ;
       <Route
-        path={"*"}
-        element={<RouteGuard element={<EventManagementMain />} />}
+              path={"*"}
+              element={<RouteGuard element={<WorkoutMain />} />}
       />
       ;
     </Routes>

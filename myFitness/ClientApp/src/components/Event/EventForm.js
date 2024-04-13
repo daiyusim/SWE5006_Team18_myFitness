@@ -8,8 +8,11 @@ import dayjs from 'dayjs';
 import AddressAutoComplete from '../shared/AddressAutoComplete';
 import MapComponent from '../shared/MapComponent';
 import { useBanner } from "../Banner/BannerContext";
+import { getAppUserIdSelector } from "../redux/selector";
+import { useSelector } from "react-redux";
 
 const EventForm = () => {
+    const userId = useSelector(getAppUserIdSelector);
     const { showSuccessBanner, showErrorBanner } = useBanner();
     const initialFormData = {
         title: '',
@@ -102,7 +105,7 @@ const EventForm = () => {
                         isDeleted: false,
                         createdOn: new Date().toISOString(),
                         status: "Created",
-                        createdBy: 0
+                        createdBy: userId
                     }),
                 });
 
