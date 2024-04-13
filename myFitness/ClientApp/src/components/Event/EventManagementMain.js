@@ -73,16 +73,13 @@ export const EventManagementMain = () => {
             .then(r => r.json())
             .then(res => {
                 const formattedEvents = res.map(event => ({
-                    ...event,
-                    startDateTime: dayjs(event.startDateTime).format('DD/MM/YYYY HH:mm'),
-                    endDateTime: dayjs(event.endDateTime).format('DD/MM/YYYY HH:mm'),
-                    registrationEndDate: dayjs(event.registrationEndDate).format('DD/MM/YYYY HH:mm'),
+                    ...event
                 }));
 
                 const filteredEvents = formattedEvents.filter(event => {
                     return !event.registrations.some(registration => registration.userId === userId);
                 });
-
+                console.log(filteredEvents)
                 setEvents(filteredEvents);
             })
             .catch(e => console.log("Error fetching events", e))
@@ -191,16 +188,26 @@ export const EventManagementMain = () => {
                                         >
                                             {event.category}
                                         </Typography>
+
                                     </div>
                                 }
-                                subheader={`${event.startDateTime} - ${event.endDateTime}`}
+                                subheader={`${dayjs(event.startDateTime).format('DD/MM/YYYY HH:mm')} - ${dayjs(event.endDateTime).format('DD/MM/YYYY HH:mm') }`}
                                 action={
+                                    event.createdBy === userId || !dayjs().isAfter(dayjs(event.registrationEndDate, 'DD/MM/YYYY HH:mm')) && (
                                     <IconButton aria-label="more" aria-controls={`event-menu-${event.id}`} aria-haspopup="true" onClick={(e) => handleClick(e, event.id, event.title)}>
                                         <MoreVertIcon />
-                                    </IconButton>
+                                        </IconButton>
+                                    )
                                 }
                             />
                             <CardContent style={{ overflow: 'auto' }}>
+                                <Typography variant="body1" component="p">
+                                    {dayjs().isBefore(dayjs(event.registrationEndDate, 'DD/MM/YYYY HH:mm')) ? (
+                                        <span style={{ color: 'green' }}>Open for Registration</span>
+                                    ) : (
+                                        <span style={{ color: 'red' }}>Registration Closed</span>
+                                    )}
+                                </Typography>
                                 <Typography
                                     variant="body1"
                                     component="p"
@@ -212,13 +219,15 @@ export const EventManagementMain = () => {
                                 >
                                     {event.description}
                                 </Typography>
+
                                 <Typography variant="body1" component="p">
-                                    Registration Closing Date: {event.registrationEndDate}
+                                    Registration Closing Date:  {dayjs(event.registrationEndDate).format('DD/MM/YYYY HH:mm')}
                                 </Typography>
                                 <Typography variant="body1" component="p">
                                     Capacity: {event.capacity} 
                                 </Typography>
                             </CardContent>
+
                             <Menu
                                 id={`event-menu-${event.id}`}
                                 anchorEl={anchorEl}
@@ -226,7 +235,9 @@ export const EventManagementMain = () => {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                {event.createdBy !== userId && (<MenuItem onClick={handleShowRegisterDialog}>Register</MenuItem>)}
+                                {event.createdBy !== userId && !dayjs().isAfter(dayjs(event.registrationEndDate, 'DD/MM/YYYY HH:mm')) && (
+                                    <MenuItem onClick={handleShowRegisterDialog}>Register</MenuItem>
+                                )}
                                 {event.createdBy === userId && (<MenuItem onClick={handleEditEvent}>Edit</MenuItem>)}
                                 {event.createdBy === userId && event.totalRegistered === 0 && (<MenuItem onClick={handleShowDeleteDialog}>Cancel</MenuItem>)}
                             </Menu>
