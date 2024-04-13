@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using myFitness.Models;
@@ -25,10 +26,12 @@ namespace myFitness.Controllers
 
         // GET: api/users
         [HttpGet]
+        [Authorize]
         public async Task<List<User>> Get() => await _usersServices.GetAsync();
 
         // GET api/users/{id}
         [HttpGet("{id:length(24)}")]
+        [Authorize]
         public User GetUserByUserId(string id)
         {
             User us = _usersServices.Get(id);
