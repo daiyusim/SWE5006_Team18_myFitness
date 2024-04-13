@@ -18,6 +18,7 @@ import { setUserId } from "../redux/appSlice";
 import { useLoginMutation, useRegisterMutation } from "../../api/UserApi";
 import { Link } from "react-router-dom";
 import { BaseRoutes } from "../helper/Routing";
+import { useNavigate } from "react-router-dom";
 
 const WelcomeMessage = styled(Typography)({
   fontWeight: "bold",
@@ -35,7 +36,7 @@ export const Register = (props) => {
   const { nextPage } = props;
   const [cookies, setCookies] = useCookies();
   const dispatch = useDispatch();
-
+    const navigate = useNavigate();
   const [
     registerPost,
     {
@@ -50,7 +51,7 @@ export const Register = (props) => {
     await registerPost({ email, password, name, contact })
       .unwrap()
       .then((payload) => {
-        console.log("Success Register");
+          console.log("Success Register");
       })
       .catch((error) => console.log("error"));
   };
@@ -86,7 +87,8 @@ export const Register = (props) => {
         values.password,
         values.name,
         values.mobile
-      );
+        );
+        navigate(BaseRoutes.Login);
     },
   });
 
@@ -180,6 +182,7 @@ export const Register = (props) => {
                   "&:hover": { bgcolor: "#1a2e5d" },
                 }}
                 fullWidth
+                
               >
                 Register as user
               </Button>

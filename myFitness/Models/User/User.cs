@@ -24,9 +24,7 @@ namespace myFitness.Models
         public string Contact { get; set; }
 
         [BsonElement("createdBy")]
-        public int CreatedBy { get; set; }
-        [BsonElement("roleType")]
-        public string RoleType { get; set; }
+        public string CreatedBy { get; set; }
 
         [BsonElement("createdOn")]
         public DateTime CreatedOn { get; set; }
@@ -35,7 +33,7 @@ namespace myFitness.Models
 
         public User()
         {
-            CreatedBy = 1;
+            CreatedBy = "1";
             CreatedOn = DateTime.Now;
         }
     }

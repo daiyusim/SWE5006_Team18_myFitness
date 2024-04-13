@@ -4,9 +4,12 @@ import { useLoading } from '../shared/LoadingContext';
 import dayjs from 'dayjs';
 import MapComponent from '../shared/MapComponent';
 import { useBanner } from "../Banner/BannerContext";
+import { useSelector } from "react-redux";
+import { getAppUserIdSelector } from "../redux/selector";
 
 const RegisterEvent = ({ open, handleClose, eventId }) => {
     const { showSuccessBanner, showErrorBanner } = useBanner();
+    const userId = useSelector(getAppUserIdSelector);
     const { setLoading } = useLoading();
     const [event, setEvent] = useState(null);
     const styleBtn = {
@@ -27,6 +30,7 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
                     return;
                 }
                 const eventData = await response.json();
+                console.log(eventData);
                 setEvent(eventData);
                 setLoading(false);
             } catch (error) {
@@ -48,7 +52,7 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
                 eventId: eventId,
                 createdOn: new Date().toISOString(),
                 status: 'Registered',
-                userId: '6602f019cc013fe8b77e6bc5'
+                userId: userId
             }),
         });
 
@@ -110,7 +114,7 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
                         <Typography sx={{ mt: 1 }}>
                             <b style={{ display: 'inline-block', marginRight: '8px' }}>Organizer:</b>
                             
-                            {event.createdBy} (change to username)
+                            {event.createdByName}
                         </Typography>
                         <form onSubmit={handleRegister} encType="multipart/form-data">
                             <FormControl component="fieldset" sx={{ mt: 2 }}>

@@ -11,6 +11,8 @@ import { BaseRoutes } from '../helper/Routing';
 import RegisterEvent from "../Event/RegisterEvent";
 import './Workout.css';
 import dayjs from 'dayjs';
+import { useSelector } from "react-redux";
+import { getAppUserIdSelector } from "../redux/selector";
 
 const categoryColors = {
     All: { backgroundColor: '#FFA500', color: 'white' },
@@ -31,10 +33,11 @@ export const WorkoutMain = () => {
     const [selectedRowEventName, setSelectedRowEventName] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
     const [showRegisterDialog, setShowRegisterDialog] = useState(false);
+    const userId = useSelector(getAppUserIdSelector);
     const fetchDashboardDetails = async () => {
-        const UserId = '6602f019cc013fe8b77e6bc5'; // hardcode first, later use persistent userid
+
         try {
-            const response = await fetch(`/api/registration/activities/${UserId}`);
+            const response = await fetch(`/api/registration/activities/${userId}`);
             if (!response.ok) {
                 setLoading(false);
                 return;
@@ -42,7 +45,7 @@ export const WorkoutMain = () => {
             const data = await response.json();
             setData(data);
          
-            const filteredEvents = await fetchAndFilterEvents(data.profile?.interests, UserId);
+            const filteredEvents = await fetchAndFilterEvents(data.profile?.interests, userId);
             setEvents(filteredEvents);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -68,8 +71,10 @@ export const WorkoutMain = () => {
                 }
                 const eventCreatedOn = dayjs(event.createdOn).valueOf();
                 const isWithinWeek = eventCreatedOn >= weekStartDate && eventCreatedOn <= weekEndDate;
-                return isWithinWeek && !event.registrations.some(registration => registration.userId === UserId);
+                const createdByCurrentUser = event.createdBy !== UserId;
+                return isWithinWeek && createdByCurrentUser && !event.registrations.some(registration => registration.userId === UserId);
             }).slice(0, 5);
+
 
             return filteredEvents;
         } catch (error) {

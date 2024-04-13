@@ -9,6 +9,9 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useLoading } from "../shared/LoadingContext";
 import DeleteEvent from "./DeleteEvent";
 import RegisterEvent from "./RegisterEvent";
+import { getAppUserIdSelector } from "../redux/selector";
+import { useSelector } from "react-redux";
+
 const categoryColors = {
     All: { backgroundColor: '#FFA500', color: 'white' },
     Workout: { backgroundColor: '#FF5733', color: 'white' },
@@ -27,7 +30,7 @@ export const EventManagementMain = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [showRegisterDialog, setShowRegisterDialog] = useState(false);
-    
+    const userId = useSelector(getAppUserIdSelector);
     const handleClick = (event, eventId, eventName) => {
         setSelectedRowId(eventId);
         setSelectedRowEventName(eventName);
@@ -65,33 +68,22 @@ export const EventManagementMain = () => {
         setAnchorEl(null);
     };
     const fetchEvents = () => {
-        const UserId = '6602f019cc013fe8b77e6bc5'; // hardcode first, later use persistent userid
         setLoading(true);
         fetch("api/event")
             .then(r => r.json())
             .then(res => {
                 const formattedEvents = res.map(event => ({
-                    ...event,
-                    startDateTime: dayjs(event.startDateTime).format('DD/MM/YYYY HH:mm'),
-                    endDateTime: dayjs(event.endDateTime).format('DD/MM/YYYY HH:mm'),
-                    registrationEndDate: dayjs(event.registrationEndDate).format('DD/MM/YYYY HH:mm'),
+                    ...event
                 }));
 
                 const filteredEvents = formattedEvents.filter(event => {
-                    return !event.registrations.some(registration => registration.userId === UserId);
+                    return !event.registrations.some(registration => registration.userId === userId);
                 });
-
+                console.log(filteredEvents)
                 setEvents(filteredEvents);
             })
             .catch(e => console.log("Error fetching events", e))
             .finally(() => setLoading(false));
-    };
-    const styleBtn = {
-        fontSize: '1rem',
-        textTransform: 'none',
-        fontWeight: 'bold',
-        backgroundColor: '#23418B',
-        marginLeft: 'auto'
     };
 
     useEffect(() => {
@@ -196,16 +188,26 @@ export const EventManagementMain = () => {
                                         >
                                             {event.category}
                                         </Typography>
+
                                     </div>
                                 }
-                                subheader={`${event.startDateTime} - ${event.endDateTime}`}
+                                subheader={`${dayjs(event.startDateTime).format('DD/MM/YYYY HH:mm')} - ${dayjs(event.endDateTime).format('DD/MM/YYYY HH:mm') }`}
                                 action={
+                                    event.createdBy === userId || !dayjs().isAfter(dayjs(event.registrationEndDate, 'DD/MM/YYYY HH:mm')) && (
                                     <IconButton aria-label="more" aria-controls={`event-menu-${event.id}`} aria-haspopup="true" onClick={(e) => handleClick(e, event.id, event.title)}>
                                         <MoreVertIcon />
-                                    </IconButton>
+                                        </IconButton>
+                                    )
                                 }
                             />
                             <CardContent style={{ overflow: 'auto' }}>
+                                <Typography variant="body1" component="p">
+                                    {dayjs().isBefore(dayjs(event.registrationEndDate, 'DD/MM/YYYY HH:mm')) ? (
+                                        <span style={{ color: 'green' }}>Open for Registration</span>
+                                    ) : (
+                                        <span style={{ color: 'red' }}>Registration Closed</span>
+                                    )}
+                                </Typography>
                                 <Typography
                                     variant="body1"
                                     component="p"
@@ -217,13 +219,15 @@ export const EventManagementMain = () => {
                                 >
                                     {event.description}
                                 </Typography>
+
                                 <Typography variant="body1" component="p">
-                                    Registration Closing Date: {event.registrationEndDate}
+                                    Registration Closing Date:  {dayjs(event.registrationEndDate).format('DD/MM/YYYY HH:mm')}
                                 </Typography>
                                 <Typography variant="body1" component="p">
                                     Capacity: {event.capacity} 
                                 </Typography>
                             </CardContent>
+
                             <Menu
                                 id={`event-menu-${event.id}`}
                                 anchorEl={anchorEl}
@@ -231,10 +235,11 @@ export const EventManagementMain = () => {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                <MenuItem onClick={handleShowRegisterDialog}>Register</MenuItem>
-                                {/* set the user access rights after that */}
-                                {event.totalRegistered === 0 && (<MenuItem onClick={handleEditEvent}>Edit</MenuItem>)}
-                                {event.totalRegistered === 0 && (<MenuItem onClick={handleShowDeleteDialog}>Delete</MenuItem>)}
+                                {event.createdBy !== userId && !dayjs().isAfter(dayjs(event.registrationEndDate, 'DD/MM/YYYY HH:mm')) && (
+                                    <MenuItem onClick={handleShowRegisterDialog}>Register</MenuItem>
+                                )}
+                                {event.createdBy === userId && (<MenuItem onClick={handleEditEvent}>Edit</MenuItem>)}
+                                {event.createdBy === userId && event.totalRegistered === 0 && (<MenuItem onClick={handleShowDeleteDialog}>Cancel</MenuItem>)}
                             </Menu>
                         </Card>
                     </Grid>

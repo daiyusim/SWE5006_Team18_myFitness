@@ -1,8 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  userId: "",
-  roleType: "",
+  userId: ""
 };
 
 const AppSlice = createSlice({
@@ -14,7 +13,6 @@ const AppSlice = createSlice({
     },
     clearUserId(state) {
       state.userId = "";
-      state.roleType = "";
     },
   },
 });
