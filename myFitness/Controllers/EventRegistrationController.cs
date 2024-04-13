@@ -52,6 +52,20 @@ namespace myFitness.Controllers
             }
         }
 
+        // DELETE api/registration/{eventid}?userId
+        [HttpDelete("{eventId:length(24)}")]
+        public async Task<ActionResult> Delete(string eventId, [FromQuery] string userId)
+        {
+            EventRegistration ev = await _regisServices.GetEventRegistrationByIds(eventId,userId);
+            if (ev == null)
+            {
+                return NotFound();
+            }
+
+            await _regisServices.RemoveAsync(eventId, userId);
+
+            return Ok(new { message = "Deleted Successfully" });
+        }
 
     }
 }

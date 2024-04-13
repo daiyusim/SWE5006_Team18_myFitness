@@ -27,6 +27,9 @@ namespace myFitness.Services
         public async Task<EventRegistration> GetAsync(string id) =>
             await _registrationCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
+        public async Task<EventRegistration> GetEventRegistrationByIds(string eventId, string userId) =>
+             await _registrationCollection.Find(x => x.UserId == userId && x.EventId == eventId).FirstOrDefaultAsync();
+        
         public async Task CreateAsync(EventRegistration newRegistration) =>
             await _registrationCollection.InsertOneAsync(newRegistration);
 
@@ -34,8 +37,20 @@ namespace myFitness.Services
         public async Task UpdateAsync(string id, EventRegistration updateRegistration) =>
             await _registrationCollection.ReplaceOneAsync(x => x.Id == id, updateRegistration);
 
-        public async Task RemoveAsync(string id) =>
-            await _registrationCollection.DeleteOneAsync(x => x.Id == id);
+        public async Task RemoveAsync(string eventId, string userId)
+        {
+            var filter = Builders<Event>.Filter.Eq(x => x.Id, eventId);
+            var update = Builders<Event>.Update.Inc(x => x.Capacity, +1);
+
+            await _eventCollection.UpdateOneAsync(filter, update);
+
+            var registrationFilter = Builders<EventRegistration>.Filter.And(
+                Builders<EventRegistration>.Filter.Eq(x => x.EventId, eventId),
+                Builders<EventRegistration>.Filter.Eq(x => x.UserId, userId)
+            );
+
+            await _registrationCollection.DeleteOneAsync(registrationFilter);
+        }
 
         public async Task<bool> SubmitAttendance(List<EventRegistration> attendances)
         {

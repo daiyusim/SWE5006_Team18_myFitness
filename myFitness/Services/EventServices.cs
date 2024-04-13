@@ -34,16 +34,17 @@ namespace myFitness.Services
 
             foreach (var eventObj in events)
             {
-                var registrations =  _registrationCollection.AsQueryable()
-                    .Where(r => r.EventId == eventObj.Id)
-                    .ToList();
-
+                var registrations = await _registrationCollection.Find(r => r.EventId == eventObj.Id).ToListAsync();
                 eventObj.Registrations = registrations;
+                var createdByUser = await _userCollection.Find(u => u.Id == eventObj.CreatedBy).FirstOrDefaultAsync();
+                if (createdByUser != null)
+                {
+                    eventObj.CreatedByName = createdByUser.Name;
+                }
             }
 
             return events;
         }
-
         public async Task<Event> GetAsync(string id)
         {
             Event fetchedEvent = await _eventCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
