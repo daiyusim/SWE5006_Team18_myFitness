@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Box, Typography, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, FormControlLabel, Checkbox } from '@mui/material';
+import { IconButton,Button, Box, Typography, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, FormControlLabel, Checkbox, Grid } from '@mui/material';
 import { useLoading } from '../shared/LoadingContext';
 import axios from 'axios';
 import { useBanner } from "../Banner/BannerContext";
+import { useSelector } from "react-redux";
+import { getAppUserIdSelector } from "../redux/selector";
+import MapComponent from '../shared/MapComponent';
+import dayjs from 'dayjs';
+import CloseIcon from '@mui/icons-material/Close';
 
 const AttendanceForm = ({ open, handleClose, id }) => {
     const { setLoading } = useLoading();
     const [attendance, setAttendance] = useState({});
     const [events, setEvent] = useState(null);
     const { showSuccessBanner, showErrorBanner } = useBanner();
+    const userId = useSelector(getAppUserIdSelector);
     const styleBtn = {
         fontSize: '1rem',
         textTransform: 'none',
@@ -92,7 +98,7 @@ const AttendanceForm = ({ open, handleClose, id }) => {
             }}
         >
             <>
-                {events && (
+                {events?.createdBy === userId && events && (
                     <Box
                         sx={{
                             width: '80vh',
@@ -166,6 +172,77 @@ const AttendanceForm = ({ open, handleClose, id }) => {
                         </form>
                     </Box>
                 )}
+                {events?.createdBy !== userId && events && (
+                    <Box
+                        sx={{
+                            width: '80vh',
+                            maxHeight: '70vh',
+                            bgcolor: 'background.paper',
+                            p: 4,
+                            borderRadius: '20px',
+                            overflowY: 'auto',
+                            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
+                        }}
+                    >
+                        <Grid container alignItems="center">
+                            <Grid item xs={10}>
+                                <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold', marginBottom: '1rem', display: 'inline' }}>
+                                    {events.title} - Attendance (
+                                    <Typography
+                                        variant="inherit"
+                                        sx={{
+                                            color:
+                                                events.registrations.filter(registration => registration.userId === userId)[0]?.status === 'Registered'
+                                                    ? 'blue'
+                                                    : events.registrations.filter(registration => registration.userId === userId)[0]?.status === 'Attended'
+                                                        ? 'green'
+                                                        : 'red',
+                                            display: 'inline', 
+                                        }}
+                                    >
+                                        {events.registrations.filter(registration => registration.userId === userId)[0]?.status}
+                                    </Typography>
+                                    )
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2} sx={{ textAlign: 'right' }}>
+                                <IconButton onClick={handleClose}>
+                                    <CloseIcon />
+                                </IconButton>
+                            </Grid>
+                        </Grid>
+                        {events.registrations && events.registrations.length > 0 ? (
+                            <Grid container spacing={2}>
+                                {events.registrations.map((registration) => (
+                                    <Grid item xs={12} sm={12} key={registration.userId}>
+                                        {registration.userId === userId && (
+                                            <>
+                                                <Typography sx={{ mt: 2 }}>
+                                                    <b>Event Description:</b> {events.description}
+                                                </Typography>
+                                                <Typography sx={{ mt: 1 }}>
+                                                    <b>Event Type:</b> {events.category}
+                                                </Typography>
+                                                <Typography sx={{ mt: 1 }}>
+                                                    <b>Date and Time:</b> {`${dayjs(events.startDateTime).format('DD/MM/YYYY HH:mm')} - ${dayjs(events.endDateTime).format('DD/MM/YYYY HH:mm')}`}
+                                                </Typography>
+                                                <Typography sx={{ mt: 1 }}>
+                                                    <b>Organizer:</b> {events.createdByName}
+                                                </Typography>
+                                                {events.lat && events.long && (
+                                                    <MapComponent lat={events.lat} long={events.long} address={events.address} />
+                                                )}
+                                            </>
+                                        )}
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        ) : null}
+                    </Box>
+                )}
+
+
+
             </>
         </Modal>
     );

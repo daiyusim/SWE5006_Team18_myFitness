@@ -58,6 +58,6 @@ namespace myFitness.Models
         public double Long { get; set; }
         public List<EventRegistration>? Registrations { get; set; }
 
-        public string CreatedByName { get; set; }   
+        public string? CreatedByName { get; set; }   
     }
 }
