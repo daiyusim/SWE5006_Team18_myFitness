@@ -193,12 +193,13 @@ export const EventManagementMain = () => {
                                 }
                                 subheader={`${dayjs(event.startDateTime).format('DD/MM/YYYY HH:mm')} - ${dayjs(event.endDateTime).format('DD/MM/YYYY HH:mm') }`}
                                 action={
-                                    event.createdBy === userId || !dayjs().isAfter(dayjs(event.registrationEndDate, 'DD/MM/YYYY HH:mm')) && (
-                                    <IconButton aria-label="more" aria-controls={`event-menu-${event.id}`} aria-haspopup="true" onClick={(e) => handleClick(e, event.id, event.title)}>
-                                        <MoreVertIcon />
+                                    (!dayjs().isAfter(dayjs(event.registrationEndDate, 'DD/MM/YYYY HH:mm'))) && (
+                                        <IconButton aria-label="more" aria-controls={`event-menu-${event.id}`} aria-haspopup="true" onClick={(e) => handleClick(e, event.id, event.title)}>
+                                            <MoreVertIcon />
                                         </IconButton>
                                     )
                                 }
+
                             />
                             <CardContent style={{ overflow: 'auto' }}>
                                 <Typography variant="body1" component="p">
