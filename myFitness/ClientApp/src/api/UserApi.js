@@ -2,14 +2,14 @@ import { ApiSlice } from "./ApiSlice";
 const userApi = ApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation({
-      query: ({ email, password }) => ({
+      query: ({ email, password, name, contact }) => ({
         url: "/users/register",
         method: "POST",
         body: {
           email: email,
           password: password,
-          name: "tester1",
-          contact: "1111",
+          name: name,
+          contact: contact,
         },
       }),
     }),

@@ -4,4 +4,5 @@ export const BaseRoutes = {
   Workout: "/Workout",
   Attendance: "/Attendance",
   Login: "/Login",
+  Register: "/Register",
 };

@@ -17,12 +17,12 @@ namespace myFitness.Services
             var mongoClient = new MongoClient(settings.Value.Connection);
             var mongoDb = mongoClient.GetDatabase(settings.Value.DatabaseName);
             _userCollection = mongoDb.GetCollection<User>(settings.Value.Users);
-            var indexKeys = Builders<User>.IndexKeys.Combine(
-             Builders<User>.IndexKeys.Ascending(u => u.Contact),
-             Builders<User>.IndexKeys.Ascending(u => u.EmailAddress));
+            // Create the unique index on the field
             var indexOptions = new CreateIndexOptions { Unique = true };
-            var indexModel = new CreateIndexModel<User>(indexKeys, indexOptions);
-            _userCollection.Indexes.CreateOne(indexModel);
+            var indexModelEmail = new CreateIndexModel<User>("{ emailAddress : 1 }", indexOptions);
+            var indexModelContact = new CreateIndexModel<User>("{ contact : 1 }", indexOptions);
+            _userCollection.Indexes.CreateOne(indexModelEmail);
+            _userCollection.Indexes.CreateOne(indexModelContact);
             _profileCollection = mongoDb.GetCollection<Profile>(settings.Value.Profile);
         }
 

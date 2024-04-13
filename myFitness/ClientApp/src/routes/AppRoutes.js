@@ -7,7 +7,8 @@ import EventForm from "../components/Event/EventForm";
 import UserProfile from "../components/Profile/UserProfile";
 import WorkoutMain from "../components/Workout/WorkoutMain";
 import AttendanceMain from "../components/Attendance/AttendanceMain";
-import Login from "../components/Login";
+import Login from "../components/Scenes/Login";
+import Register from "../components/Scenes/Register";
 
 const AppRoutes = () => {
   return (
@@ -16,7 +17,10 @@ const AppRoutes = () => {
         path={BaseRoutes.Login}
         element={<RouteGuard element={<Login />} />}
       />
-      ;
+      <Route
+        path={BaseRoutes.Register}
+        element={<RouteGuard element={<Register />} />}
+      />
       <Route
         path={BaseRoutes.Event}
         element={<RouteGuard element={<EventManagementMain />} />}

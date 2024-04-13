@@ -14,8 +14,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSmile } from "@fortawesome/free-solid-svg-icons";
 import { useCookies } from "react-cookie";
 import { useDispatch } from "react-redux";
-import { setUserId } from "../components/redux/appSlice";
-import { useLoginMutation, useRegisterMutation } from "../api/UserApi";
+import { setUserId } from "../redux/appSlice";
+import { useLoginMutation, useRegisterMutation } from "../../api/UserApi";
+import { Link } from "react-router-dom";
+import { BaseRoutes } from "../helper/Routing";
 
 const WelcomeMessage = styled(Typography)({
   fontWeight: "bold",
@@ -29,19 +31,11 @@ const WelcomeMessage = styled(Typography)({
   },
 });
 
-export const Login = (props) => {
+export const Register = (props) => {
   const { nextPage } = props;
   const [cookies, setCookies] = useCookies();
   const dispatch = useDispatch();
-  const [
-    loginPost,
-    {
-      isLoading: isLoginLoading,
-      isSuccess: isLoginSuccess,
-      isError: isLoginError,
-      data: loginData,
-    },
-  ] = useLoginMutation();
+
   const [
     registerPost,
     {
@@ -52,31 +46,28 @@ export const Login = (props) => {
   ] = useRegisterMutation();
 
   // EventHandler
-  const onRegisterClick = async (email, password) => {
-    // Register user
-    var res;
-    await registerPost({ email, password })
+  const onRegisterClick = async (email, password, name, contact) => {
+    await registerPost({ email, password, name, contact })
       .unwrap()
       .then((payload) => {
         console.log("Success Register");
-        payload = res;
       })
-      .catch((error) => console.log("Error Register"));
+      .catch((error) => console.log("error"));
   };
-  const onLoginClick = async (email, password) => {
-    await loginPost({ email, password })
-      .unwrap()
-      .then((payload) => {
-        console.log(payload);
-        setCookies("jwt", payload.token);
-      })
-      .catch(() => console.log("Unauthorized"));
-  };
-
   // Yup for form validation
-  const loginSchema = Yup.object().shape({
+  const registerSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Required"),
-    password: Yup.string().required("Required"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(8, "Password must be at least 8 characters")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+      ),
+    name: Yup.string().required("Required"),
+    mobile: Yup.string()
+      .matches(/^\d{8}$/, "Mobile number must be exactly 8 digits")
+      .required("Required"),
   });
 
   // Formik hook
@@ -84,11 +75,18 @@ export const Login = (props) => {
     initialValues: {
       email: "",
       password: "",
+      name: "",
+      mobile: "",
     },
-    validationSchema: loginSchema,
+    validationSchema: registerSchema,
     onSubmit: (values) => {
       // make api call or perform other actions
-      onLoginClick(values.email, values.password);
+      onRegisterClick(
+        values.email,
+        values.password,
+        values.name,
+        values.mobile
+      );
     },
   });
 
@@ -143,18 +141,34 @@ export const Login = (props) => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{
-                  textTransform: "none",
-                  bgcolor: "#23418B",
-                  "&:hover": { bgcolor: "#1a2e5d" },
-                }}
+              <TextField
                 fullWidth
-              >
-                Login
-              </Button>
+                id="name"
+                name="name"
+                type="name"
+                placeholder="Name"
+                variant="outlined"
+                value={formik.values.name}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.name && Boolean(formik.errors.name)}
+                helperText={formik.touched.name && formik.errors.name}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                id="mobile"
+                name="mobile"
+                type="mobile"
+                placeholder="Mobile"
+                variant="outlined"
+                value={formik.values.mobile}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.mobile && Boolean(formik.errors.mobile)}
+                helperText={formik.touched.mobile && formik.errors.mobile}
+              />
             </Grid>
             <Grid item xs={12}>
               <Button
@@ -170,6 +184,21 @@ export const Login = (props) => {
                 Register as user
               </Button>
             </Grid>
+            <Grid item xs={12}>
+              <Link to={BaseRoutes.Login}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    textTransform: "none",
+                    bgcolor: "#23418B",
+                    "&:hover": { bgcolor: "#1a2e5d" },
+                  }}
+                  fullWidth
+                >
+                  Back to Login
+                </Button>
+              </Link>
+            </Grid>
           </Grid>
         </form>
       </Box>
@@ -177,4 +206,4 @@ export const Login = (props) => {
   );
 };
 
-export default Login;
+export default Register;
