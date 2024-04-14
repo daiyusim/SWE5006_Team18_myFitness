@@ -1,8 +1,10 @@
 import React from 'react';
 import { Button, Box, Typography, IconButton, Modal } from '@mui/material';
 import { useBanner } from "../Banner/BannerContext";
+import { useSelector } from "react-redux";
+import { getAppUserIdSelector } from "../redux/selector";
 
-const DeleteEvent = ({ open, handleClose, eventId, eventName }) => {
+const CancelEvent = ({ open, handleClose, eventId, eventName }) => {
     const { showSuccessBanner, showErrorBanner } = useBanner();
     const StyleBtn = {
         fontSize: '1rem',
@@ -10,21 +12,22 @@ const DeleteEvent = ({ open, handleClose, eventId, eventName }) => {
         fontWeight: 'bold',
         backgroundColor: '#d03530'
     }
+    const userId = useSelector(getAppUserIdSelector);
     const handleDelete = async (eventId) => {
         try {
-            const response = await fetch(`api/event/${eventId}`, {
+            const response = await fetch(`api/registration/${eventId}?userId=${userId}`, {
                 method: 'DELETE',
             });
 
             if (!response.ok) {
-                throw new Error('Failed to delete event');
+                throw new Error('Failed to cancel registration');
             }
 
             const data = await response.json();
-            showSuccessBanner("Event deleted successfully")
+            showSuccessBanner("Cancel registration successfully");
             handleClose();
         } catch (error) {
-            console.error('Error deleting event:', error);
+            console.error('Error cancelling registration:', error);
         }
     };
     return (
@@ -49,17 +52,17 @@ const DeleteEvent = ({ open, handleClose, eventId, eventName }) => {
                 }}
             >
                 <Typography id="delete-event-modal-title" variant="h6" component="h2">
-                    Delete "{eventName}" 
+                    Cancel Registration for "{eventName}" 
                 </Typography>
                 <Typography id="delete-event-modal-description" sx={{ mt: 2 }}>
-                    Are you sure you want to delete this event?
+                    Are you sure you want to cancel registration for this event?
                 </Typography>
                 <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
                     <Button variant="outlined" sx={{ mr: 2 }} onClick={handleClose}>
                         Cancel
                     </Button>
                     <Button type="submit" variant="contained"  onClick={() => handleDelete(eventId)} sx={StyleBtn} >
-                        Delete
+                        Confirm
                     </Button>
                  
                 </Box>
@@ -68,4 +71,4 @@ const DeleteEvent = ({ open, handleClose, eventId, eventName }) => {
     );
 };
 
-export default DeleteEvent;
+export default CancelEvent;
