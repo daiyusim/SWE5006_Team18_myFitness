@@ -61,11 +61,11 @@ Exit MyFitness
 Login as User 
 	[Arguments]									${BROWSER}					
 	click										${email}
-	Run Keyword If								'${BROWSER}' == 'firefox'				Type			${email}					pz@gmail.com
-	Run Keyword If								'${BROWSER}' == 'chrome'				Type			${email}					tester@test.com				
+	Run Keyword If								'${BROWSER}' == 'firefox'				Type			${email}					lpz@test.com
+	Run Keyword If								'${BROWSER}' == 'chrome'				Type			${email}					lpz@test.com			
 	click										${password}	
 	Run Keyword If								'${BROWSER}' == 'firefox'				Type			${password}					Password123!
-	Run Keyword If								'${BROWSER}' == 'chrome'				Type			${password}					Password1@
+	Run Keyword If								'${BROWSER}' == 'chrome'				Type			${password}					Password123!
 	click										${loginBtn}
 	Sleep										${LONGPAUSE}
 
