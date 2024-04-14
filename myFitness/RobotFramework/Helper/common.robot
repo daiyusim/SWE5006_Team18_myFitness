@@ -18,7 +18,7 @@ ${chrome}				chrome
 ${fox}					firefox
 
 	
-@{BROWSERLIST} =        ${fox}  ${chrome}
+@{BROWSERLIST} =       ${chrome}   ${fox}  
 
 ${HOST}					https://localhost:44482/
 
