@@ -57,7 +57,8 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
         });
 
         if (!response.ok) {
-            showErrorBanner('Failed to register event');
+            const errorMessage = await response.text(); 
+            showErrorBanner(errorMessage);
             return;
         }
 
@@ -65,6 +66,7 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
         showSuccessBanner('Event registration successful');
         handleClose();
     };
+
 
     return (
         <Modal
