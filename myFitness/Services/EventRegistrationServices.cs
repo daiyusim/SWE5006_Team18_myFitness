@@ -149,11 +149,53 @@ namespace myFitness.Services
 
             if (targetEvent != null)
             {
-                targetEvent.Capacity -= 1;
-                targetEvent.TotalRegistered += 1;
-                await _eventServices.UpdateAsync(targetEvent.Id, targetEvent);
-                await CreateAsync(newRegistration);
+                bool hasClash = await CheckEventClash(newRegistration.UserId, targetEvent.StartDateTime, targetEvent.EndDateTime);
+
+                if (hasClash)
+                {
+                    throw new Exception("Sorry, there's a clash with another event");
+                }
+
+                try
+                {
+                    targetEvent.Capacity -= 1;
+                    targetEvent.TotalRegistered += 1;
+                    await _eventServices.UpdateAsync(targetEvent.Id, targetEvent);
+                    await CreateAsync(newRegistration);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Failed to register for the event", ex);
+                }
+            }
+            else
+            {
+                throw new Exception("Event not found");
             }
         }
+
+
+        public async Task<bool> CheckEventClash(string userId, DateTime eventStartTime, DateTime eventEndTime)
+        {
+            var registeredEvents = await _registrationCollection.Find(r => r.UserId == userId).ToListAsync();
+
+            foreach (var registration in registeredEvents)
+            {
+                var eventDetails = await _eventServices.GetAsync(registration.EventId);
+                if (eventDetails != null)
+                {
+                    if ((eventDetails.StartDateTime < eventEndTime && eventDetails.EndDateTime > eventStartTime) ||
+                        (eventDetails.StartDateTime >= eventStartTime && eventDetails.StartDateTime < eventEndTime) ||
+                        (eventDetails.EndDateTime > eventStartTime && eventDetails.EndDateTime <= eventEndTime))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+
     }
 }

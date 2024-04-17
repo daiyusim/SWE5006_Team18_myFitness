@@ -31,9 +31,17 @@ namespace myFitness.Controllers
         [HttpPost]
         public async Task<ActionResult<EventRegistration>> Post(EventRegistration ev)
         {
-            await _regisServices.RegisterEvent(ev);
-            return CreatedAtAction(nameof(Get), new { id = ev.Id }, ev);
+            try
+            {
+                await _regisServices.RegisterEvent(ev);
+                return CreatedAtAction(nameof(Get), new { id = ev.Id }, ev);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Clash with another registered event"); 
+            }
         }
+
 
         [HttpPut]
         public async Task<IActionResult> SubmitAttendance(List<EventRegistration> registration)
