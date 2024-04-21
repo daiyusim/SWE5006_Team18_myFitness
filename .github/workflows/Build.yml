@@ -145,6 +145,22 @@ jobs:
         run: |
           elastic_ip=$(aws ec2 describe-instances --instance-ids i-05196afce046ef6b7 --query 'Reservations[].Instances[].PublicIpAddress' --output text)
           echo "::set-output name=elastic_ip::$elastic_ip"
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/myfitness.pem
+          chmod 600 ~/.ssh/myfitness.pem
+
+      - name: Load and Run Docker Image via SSH
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/myfitness.pem ec2-user@54.254.79.101 \
+          "docker load -i myfitness.tar && docker run -d -p 5050:5050 54.254.79.101/myfitness"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ap-southeast-1
+      
       - name: SSH into EC2 and load Docker image
         run: |
             ssh -o StrictHostKeyChecking=no -i ${{ github.workspace }}/myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} \
