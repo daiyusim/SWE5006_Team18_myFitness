@@ -149,8 +149,10 @@ jobs:
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/myfitness.pem
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' | ssh-keygen -p -m PEM -f /dev/stdin > ~/.ssh/myfitness.pem
           chmod 600 ~/.ssh/myfitness.pem
+        shell: bash
+
 
       - name: Load and Run Docker Image via SSH
         run: |
