@@ -85,86 +85,31 @@ jobs:
         run: docker pull ${{ secrets.DOCKER_REPOSITORY_NAME }}
       - name: Build Docker container
         run: docker run -d --name myfitnessapp -p 4000:5050 ${{ secrets.DOCKER_REPOSITORY_NAME }}
-  aws-login:
+  aws-deploy:
     runs-on: ubuntu-latest
-    needs: [build-docker,build-container]
-    env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESSKEY }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRETKEY }}
-        AWS_DEFAULT_REGION: ap-southeast-1
+    needs: [build-container]
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
+      - uses: actions/checkout@v2
       - name: Start EC2 instance
         run: aws ec2 start-instances --instance-ids i-05196afce046ef6b7
-
-      - name: Wait for instance to start
+      - name: Wait for EC2 instance to be running
         run: aws ec2 wait instance-running --instance-ids i-05196afce046ef6b7
-
-      - name: Get Public IPv4 address associated with instance
-        id: get-public-ipv4
-        run: |
-          public_ipv4=$(aws ec2 describe-instances --instance-ids i-05196afce046ef6b7 --query 'Reservations[].Instances[].PublicIpAddress' --output text)
-          echo "::set-output name=public_ipv4::$public_ipv4"
-
-      - name: Get Elastic IP address associated with instance
+      - name: Get Elastic IP address of the instance
         id: get-elastic-ip
         run: |
-          elastic_ip=$(aws ec2 describe-instances --instance-ids i-05196afce046ef6b7 --query 'Reservations[].Instances[].PublicIpAddress' --output text)
+          elastic_ip=$(aws ec2 describe-instances --instance-ids i-05196afce046ef6b7 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+          echo "Elastic IP: $elastic_ip"
           echo "::set-output name=elastic_ip::$elastic_ip"
-      - name: Pull docker image
-        run: docker pull ${{ secrets.DOCKER_REPOSITORY_NAME }}
-      - name: Tag Docker image
-        run: docker tag ${{ secrets.DOCKER_REPOSITORY_NAME }} ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
-
-      - name: Save Docker image
-        run: docker save -o myfitness.tar ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
-      - name: Set permissions for private key
-        run: chmod 600 myFitness/ClientApp/myfitness.pem
-
-      - name: Transfer Docker image to EC2
-        run: scp -o StrictHostKeyChecking=no -i myFitness/ClientApp/myfitness.pem myfitness.tar ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }}:/home/ec2-user/
-
-  build-ec2:
-    runs-on: ubuntu-latest
-    needs: [aws-login]
-    env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESSKEY }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRETKEY }}
-        AWS_DEFAULT_REGION: ap-southeast-1
-    steps:
-      - name: Get Public IPv4 address associated with instance
-        id: get-public-ipv4
-        run: |
-          public_ipv4=$(aws ec2 describe-instances --instance-ids i-05196afce046ef6b7 --query 'Reservations[].Instances[].PublicIpAddress' --output text)
-          echo "::set-output name=public_ipv4::$public_ipv4"
-
-      - name: Get Elastic IP address associated with instance
-        id: get-elastic-ip
-        run: |
-          elastic_ip=$(aws ec2 describe-instances --instance-ids i-05196afce046ef6b7 --query 'Reservations[].Instances[].PublicIpAddress' --output text)
-          echo "::set-output name=elastic_ip::$elastic_ip"
-
-      - name: Setup SSH Key
+      - name: Decode SSH Key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/myfitness.pem
           chmod 600 ~/.ssh/myfitness.pem
-        shell: bash   
-
-      
-      - name: SSH into EC2 and load Docker image
+      - name: Transfer Docker image to EC2
+        run: scp -o StrictHostKeyChecking=no -i ~/.ssh/myfitness.pem myfitness.tar ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }}:/home/ec2-user/
+      - name: Load Docker image and run container on EC2
         run: |
-            ssh -o StrictHostKeyChecking=no -i ${{ github.workspace }}/myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} \
-            "docker load -i myfitness.tar && docker run -d -p 5050:5050 ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness"
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ap-southeast-1
-
-      - name: Stop Docker container
-        run: docker stop $(docker ps -aq)
-
-      - name: Stop EC2 instance
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} \
+          "docker load -i myfitness.tar && docker run -d -p 5050:5050 ${{ secrets.DOCKER_REPOSITORY_NAME }}:latest"
+      - name: Cleanup after deployment
         run: aws ec2 stop-instances --instance-ids i-05196afce046ef6b7
