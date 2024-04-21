@@ -6,15 +6,13 @@ import { getAppUserIdSelector } from "../components/redux/selector";
 import { BaseRoutes } from "../components/helper/Routing";
 import ProtectedPage from "../components/ProtectedPage";
 
-const RouteGuard = ({ element, path, ...rest }) => {
+const RouteGuard = ({ element, path, isLoginPage, isRegisterPage, ...rest }) => {
   const userId = useSelector(getAppUserIdSelector);
   const loggedIn = !(isNull(userId) || isEmpty(trim(userId)));
 
-  const isLoginOrRegisterPage =
-    element.type.name === "Login" || element.type.name === "Register";
-  console.log(isLoginOrRegisterPage);
+  const isLoginOrRegisterPage = isLoginPage || isRegisterPage;
   if (!loggedIn) {
-    if (isLoginOrRegisterPage) {
+    if (isLoginOrRegisterPage === true) {
       return element;
     } else {
       return <Navigate to={BaseRoutes.Login} />;

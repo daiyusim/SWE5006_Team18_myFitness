@@ -15,11 +15,11 @@ const AppRoutes = () => {
     <Routes>
       <Route
         path={BaseRoutes.Login}
-        element={<RouteGuard element={<Login />} />}
+        element={<RouteGuard element={<Login />} isLoginPage={true} />}
       />
       <Route
         path={BaseRoutes.Register}
-        element={<RouteGuard element={<Register />} />}
+        element={<RouteGuard element={<Register />} isRegisterPage={true}/>}
       />
       <Route
         path={BaseRoutes.Event}
