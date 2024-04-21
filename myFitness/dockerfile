@@ -2,17 +2,17 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dotnet-build
 WORKDIR /src
 COPY . .
-RUN dotnet restore "myFitness.csproj"
-RUN dotnet build "myFitness.csproj" -c Release -o /app/build
+RUN dotnet restore "myFitness/myFitness.csproj"
+RUN dotnet build "myFitness/myFitness.csproj" -c Release -o /app/build
 
 # Stage 2: Publish the backend
 FROM dotnet-build AS dotnet-publish
-RUN dotnet publish "myFitness.csproj" -c Release -o /app/publish
+RUN dotnet publish "myFitness/myFitness.csproj" -c Release -o /app/publish
 
 # Stage 3: Build the frontend (React)
 FROM node AS node-builder
 WORKDIR /app/client
-COPY ./ClientApp ./
+COPY ./myFitness/ClientApp ./
 RUN npm install
 RUN npm run build
 
