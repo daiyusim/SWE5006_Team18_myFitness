@@ -31,8 +31,7 @@ const WelcomeMessage = styled(Typography)({
   },
 });
 
-export const Login = (props) => {
-  const { nextPage } = props;
+export const Login = () => {
   const [cookies, setCookies] = useCookies();
   const dispatch = useDispatch();
   const [

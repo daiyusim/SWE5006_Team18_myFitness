@@ -1,22 +1,25 @@
+# Stage 1: Build the backend (.NET Core)
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dotnet-build
 WORKDIR /src
-COPY . /src
+COPY . .
 RUN dotnet restore "myFitness.csproj"
 RUN dotnet build "myFitness.csproj" -c Release -o /app/build
 
+# Stage 2: Publish the backend
 FROM dotnet-build AS dotnet-publish
 RUN dotnet publish "myFitness.csproj" -c Release -o /app/publish
 
+# Stage 3: Build the frontend (React)
 FROM node AS node-builder
-WORKDIR /node
-COPY ./ClientApp /node
+WORKDIR /app/client
+COPY ./ClientApp ./
 RUN npm install
 RUN npm run build
 
+# Stage 4: Final image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 EXPOSE 5050
-RUN mkdir /app/wwwroot
 COPY --from=dotnet-publish /app/publish .
-COPY --from=node-builder /node/build ./wwwroot
+COPY --from=node-builder /app/client/build ./wwwroot
 ENTRYPOINT ["dotnet", "myFitness.dll"]
