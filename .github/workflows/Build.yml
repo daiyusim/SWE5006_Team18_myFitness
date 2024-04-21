@@ -86,7 +86,7 @@ jobs:
           echo "::set-output name=elastic_ip::$elastic_ip"
 
       - name: Save Docker image to file
-        run: docker save ${{ secrets.DOCKER_REPOSITORY_NAME }}:latest -o myfitness.tar
+        run: sudo docker save ${{ secrets.DOCKER_REPOSITORY_NAME }}:latest -o myfitness.tar
 
       - name: Prepare SSH key
         run: |
