@@ -122,12 +122,22 @@ jobs:
         run: docker save -o myfitness.tar ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
       - name: Write SSH key to file
         run: echo "${{ secrets.MYFITNESS_PEM }}" > myfitness.pem
+
+      - name: Write SSH key to file and set correct permissions
+        run: |
+          echo "${{ secrets.MYFITNESS_PEM }}" | base64 --decode > myfitness.pem
+          chmod 400 myfitness.pem
+          echo "SSH key stored and permissions set"
+
       - name: Copy Docker image to EC2
-        run:  scp -o StrictHostKeyChecking=no -i myfitness.pem myfitness.tar ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }}:/home/ec2-user/
+        run: |
+          scp -o StrictHostKeyChecking=no -i myfitness.pem myfitness.tar ec2-user@54.254.79.101:/home/ec2-user/
+        shell: /usr/bin/bash -e {0}
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESSKEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRETKEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ap-southeast-1
+
 
 
 
