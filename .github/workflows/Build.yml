@@ -128,6 +128,12 @@ jobs:
           echo "${{ secrets.MYFITNESS_PEM }}" | base64 --decode > myfitness.pem
           chmod 400 myfitness.pem
           echo "SSH key stored and permissions set"
+        shell: /usr/bin/bash -e {0}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ap-southeast-1
+
 
       - name: Copy Docker image to EC2
         run: |
