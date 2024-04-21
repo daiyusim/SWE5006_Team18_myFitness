@@ -149,19 +149,10 @@ jobs:
       - name: Setup SSH Key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' | ssh-keygen -p -m PEM -f /dev/stdin > ~/.ssh/myfitness.pem
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/myfitness.pem
           chmod 600 ~/.ssh/myfitness.pem
-        shell: bash
+        shell: bash   
 
-
-      - name: Load and Run Docker Image via SSH
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/myfitness.pem ec2-user@54.254.79.101 \
-          "docker load -i myfitness.tar && docker run -d -p 5050:5050 54.254.79.101/myfitness"
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ap-southeast-1
       
       - name: SSH into EC2 and load Docker image
         run: |
