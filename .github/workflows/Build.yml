@@ -114,7 +114,7 @@ jobs:
           elastic_ip=$(aws ec2 describe-instances --instance-ids i-05196afce046ef6b7 --query 'Reservations[].Instances[].PublicIpAddress' --output text)
           echo "::set-output name=elastic_ip::$elastic_ip"
       - name: Tag Docker image
-        run: docker tag ${{ secrets.DOCKER_REPOSITORY_NAME }} ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness:latest
+        run: docker tag ${{ secrets.DOCKER_REPOSITORY_NAME }} ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
 
       - name: Save Docker image
         run: docker save -o myfitness.tar ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
@@ -147,7 +147,7 @@ jobs:
             cd /home/ec2-user
             ls
             sudo docker load -i myfitness.tar
-            sudo docker run -d -p 5050:5050 ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness:latest
+            sudo docker run -d -p 5050:5050 ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
           "
 
       - name: Stop Docker container
