@@ -121,7 +121,7 @@ jobs:
       - name: Save Docker image
         run: docker save -o myfitness.tar ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
       - name: Copy Docker image to EC2
-        run: scp -i myfitness.pem myfitness.tar ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }}:/home/ec2-user/
+        run: cat myfitness.tar | ssh -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} 'cat > /home/ec2-user/myfitness.tar'
 
 
   build-ec2:
