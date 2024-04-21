@@ -117,15 +117,20 @@ jobs:
         run: docker pull ${{ secrets.DOCKER_REPOSITORY_NAME }}
       - name: Tag Docker image
         run: docker tag ${{ secrets.DOCKER_REPOSITORY_NAME }} ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
+      - name: Change directory to /home/ec2-user/
+        run: cd /home/ec2-user/
 
       - name: Save Docker image
         run: docker save -o myfitness.tar ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
+
       - name: Write SSH key to file
         run: echo "${{ secrets.MYFITNESS_PEM }}" > myfitness.pem
+
       - name: Disable Strict Host Key Checking
         run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
+
       - name: Copy Docker image to EC2
-        run: scp -i myfitness.pem myfitness.tar ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }}:/home/ec2-user/
+        run: scp -i myfitness.pem myfitness.tar ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }}
 
 
   build-ec2:
