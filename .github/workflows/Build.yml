@@ -119,9 +119,9 @@ jobs:
         run: docker tag ${{ secrets.DOCKER_REPOSITORY_NAME }} ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
 
       - name: Save Docker image
-        run: docker save -o myfitness.tar ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
-      - name: Copy Docker image to EC2
-        run: cat myfitness.tar | ssh -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} 'cat > /home/ec2-user/myfitness.tar'
+        run: docker save -o /home/ec2-user/myfitness.tar ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
+
+
 
 
   build-ec2:
