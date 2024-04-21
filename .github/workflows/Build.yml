@@ -119,10 +119,9 @@ jobs:
         run: docker tag ${{ secrets.DOCKER_REPOSITORY_NAME }} ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
 
       - name: Save Docker image
-        run: docker save -o /home/ec2-user/myfitness.tar ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
-
-
-
+        run: docker save -o myfitness.tar ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
+      - name: Transfer Docker image to EC2
+        run: scp -i myFitness/ClientApp/myfitness.pem myfitness.tar ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }}:/home/ec2-user/
 
   build-ec2:
     runs-on: ubuntu-latest
@@ -145,7 +144,7 @@ jobs:
           echo "::set-output name=elastic_ip::$elastic_ip"
       - name: SSH into EC2 and load Docker image
         run: |
-          ssh -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} "
+          ssh -i ${{ secrets.MYFITNESS_PEM }} ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} "
             cd /home/ec2-user
             ls
             sudo docker load -i myfitness.tar
