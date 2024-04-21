@@ -124,8 +124,9 @@ jobs:
         run: chmod 600 myFitness/ClientApp/myfitness.pem
 
       - name: Transfer Docker image to EC2
-        run: scp -o StrictHostKeyChecking=no -i myFitness/ClientApp/myfitness.pem myfitness.tar ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }}:/home/ec2-user/
-
+        run: |
+             scp -o StrictHostKeyChecking=no -i myFitness/ClientApp/myfitness.pem myfitness.tar ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }}:/home/ec2-user/
+             scp -o StrictHostKeyChecking=no -i myFitness/ClientApp/myfitness.pem myFitness/ClientApp/myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }}:/home/ec2-user/
   build-ec2:
     runs-on: ubuntu-latest
     needs: [aws-login]
@@ -147,7 +148,7 @@ jobs:
           echo "::set-output name=elastic_ip::$elastic_ip"
       - name: SSH into EC2 and load Docker image
         run: |
-            ssh -o StrictHostKeyChecking=no -i myFitness/ClientApp/myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} "
+            ssh -o StrictHostKeyChecking=no -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} "
               cd /home/ec2-user
               ls
               sudo docker load -i myfitness.tar
