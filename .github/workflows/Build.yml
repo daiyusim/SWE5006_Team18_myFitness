@@ -149,11 +149,13 @@ jobs:
 
       - name: SSH into EC2 and load Docker image
         run: |
-          ssh -i ${{ github.workspace }}/myFitness/ClientApp/myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} \
-            'cd /home/ec2-user && \
-            ls && \
-            sudo docker load -i myfitness.tar && \
-            sudo docker run -d -p 5050:5050 ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness'
+            echo "${{ secrets.MYFITNESS_PEM }}" > myfitness.pem
+            chmod 600 myfitness.pem
+            ssh -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} \
+              'cd /home/ec2-user && \
+              ls && \
+              sudo docker load -i myfitness.tar && \
+              sudo docker run -d -p 5050:5050 ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness'
 
       - name: Stop Docker container
         run: docker stop $(docker ps -aq)
