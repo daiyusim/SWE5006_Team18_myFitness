@@ -116,10 +116,10 @@ jobs:
           echo "::set-output name=elastic_ip::$elastic_ip"
 
       - name: Tag Docker image
-        run: docker tag ${{ secrets.DOCKER_REPOSITORY_NAME }}:latest ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness:latest
+        run: sudo docker tag ${{ secrets.DOCKER_REPOSITORY_NAME }}:latest ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness:latest
 
       - name: Save Docker image
-        run: docker save -o myfitness.tar ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
+        run: sudo docker save -o myfitness.tar ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
 
       - name: Copy Docker image to EC2
         run: scp -i ${{ secrets.MYFITNESS_PEM }} myfitness.tar ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }}:/home/ec2-user/
