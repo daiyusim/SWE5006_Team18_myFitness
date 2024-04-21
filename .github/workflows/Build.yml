@@ -123,13 +123,14 @@ jobs:
 
       - name: Decode SSH Key and Set Permissions
         run: |
-          echo "${{ secrets.MYFITNESS_PEM }}" | base64 --decode > myfitness.pem
-          chmod 400 myfitness.pem
-        shell: /bin/bash --noprofile --norc -eo pipefail {0}
+             echo "${{ secrets.MYFITNESS_PEM }}" | base64 --decode > myfitness.pem
+             chmod 400 myfitness.pem
+        shell: bash {0}
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ap-southeast-1
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_DEFAULT_REGION: ap-southeast-1
+
 
 
       - name: Copy Docker image to EC2
