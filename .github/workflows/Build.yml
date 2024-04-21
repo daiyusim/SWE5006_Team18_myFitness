@@ -147,7 +147,8 @@ jobs:
           echo "::set-output name=elastic_ip::$elastic_ip"
       - name: SSH into EC2 and load Docker image
         run: |
-          ssh -o StrictHostKeyChecking=no -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} "docker load -i myfitness.tar && docker run -d -p 5050:5050 ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness"
+            ssh -o StrictHostKeyChecking=no -i ${{ github.workspace }}/myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} \
+            "docker load -i myfitness.tar && docker run -d -p 5050:5050 ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
