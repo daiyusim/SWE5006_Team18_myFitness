@@ -120,9 +120,12 @@ jobs:
 
       - name: Save Docker image
         run: docker save -o myfitness.tar ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
+      - name: Write SSH key to file
+        run: echo "${{ secrets.MYFITNESS_PEM }}" > myfitness.pem
 
       - name: Copy Docker image to EC2
-        run: scp -i "${{ secrets.MYFITNESS_PEM }}" myfitness.tar ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }}:/home/ec2-user/
+        run: scp -i myfitness.pem myfitness.tar ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }}:/home/ec2-user/
+
 
   build-ec2:
     runs-on: ubuntu-latest
@@ -145,7 +148,7 @@ jobs:
           echo "::set-output name=elastic_ip::$elastic_ip"
       - name: SSH into EC2 and load Docker image
         run: |
-          ssh -i ${{ secrets.MYFITNESS_PEM }} ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} "
+          ssh -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} "
             cd /home/ec2-user
             ls
             sudo docker load -i myfitness.tar
