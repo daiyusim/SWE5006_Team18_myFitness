@@ -85,10 +85,9 @@ jobs:
         run: docker pull ${{ secrets.DOCKER_REPOSITORY_NAME }}
       - name: Build Docker container
         run: docker run -d --name myfitnessapp -p 4000:5050 ${{ secrets.DOCKER_REPOSITORY_NAME }}
-
-  build-ec2:
+  aws-login:
     runs-on: ubuntu-latest
-    needs: [build-docker, build-container]
+    needs: [build-docker,build-container]
     env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESSKEY }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRETKEY }}
@@ -114,16 +113,34 @@ jobs:
         run: |
           elastic_ip=$(aws ec2 describe-instances --instance-ids i-05196afce046ef6b7 --query 'Reservations[].Instances[].PublicIpAddress' --output text)
           echo "::set-output name=elastic_ip::$elastic_ip"
-
       - name: Tag Docker image
-        run: sudo docker tag ${{ secrets.DOCKER_REPOSITORY_NAME }}:latest ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness:latest
+        run: docker tag ${{ secrets.DOCKER_REPOSITORY_NAME }}:latest ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness:latest
 
       - name: Save Docker image
-        run: sudo docker save -o myfitness.tar ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
+        run: docker save -o myfitness.tar ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
 
       - name: Copy Docker image to EC2
         run: scp -i ${{ secrets.MYFITNESS_PEM }} myfitness.tar ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }}:/home/ec2-user/
 
+  build-ec2:
+    runs-on: ubuntu-latest
+    needs: [aws-login]
+    env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESSKEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRETKEY }}
+        AWS_DEFAULT_REGION: ap-southeast-1
+    steps:
+      - name: Get Public IPv4 address associated with instance
+        id: get-public-ipv4
+        run: |
+          public_ipv4=$(aws ec2 describe-instances --instance-ids i-05196afce046ef6b7 --query 'Reservations[].Instances[].PublicIpAddress' --output text)
+          echo "::set-output name=public_ipv4::$public_ipv4"
+
+      - name: Get Elastic IP address associated with instance
+        id: get-elastic-ip
+        run: |
+          elastic_ip=$(aws ec2 describe-instances --instance-ids i-05196afce046ef6b7 --query 'Reservations[].Instances[].PublicIpAddress' --output text)
+          echo "::set-output name=elastic_ip::$elastic_ip"
       - name: SSH into EC2 and load Docker image
         run: |
           ssh -i ${{ secrets.MYFITNESS_PEM }} ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} "
