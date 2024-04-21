@@ -100,6 +100,9 @@ jobs:
       - name: Start EC2 instance
         run: aws ec2 start-instances --instance-ids i-05196afce046ef6b7
 
+      - name: Wait for instance to start
+        run: aws ec2 wait instance-running --instance-ids i-05196afce046ef6b7
+
       - name: Get Public IPv4 address associated with instance
         id: get-public-ipv4
         run: |
