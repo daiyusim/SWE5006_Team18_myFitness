@@ -116,7 +116,7 @@ jobs:
           echo "::set-output name=elastic_ip::$elastic_ip"
 
       - name: Tag Docker image
-        run: docker tag ${{ secrets.DOCKER_REPOSITORY_NAME }} ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
+        run: docker tag ${{ secrets.DOCKER_REPOSITORY_NAME }}:latest ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness:latest
 
       - name: Save Docker image
         run: docker save -o myfitness.tar ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
