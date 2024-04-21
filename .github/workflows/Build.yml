@@ -147,18 +147,30 @@ jobs:
           elastic_ip=$(aws ec2 describe-instances --instance-ids i-05196afce046ef6b7 --query 'Reservations[].Instances[].PublicIpAddress' --output text)
           echo "::set-output name=elastic_ip::$elastic_ip"
 
-      - name: SSH into EC2 and load Docker image
-        run: |
-            echo "${{ secrets.MYFITNESS_PEM }}" > myfitness.pem
-            chmod 600 myfitness.pem
-            ssh -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} \
-              'cd /home/ec2-user && \
-              ls && \
-              sudo docker load -i myfitness.tar && \
-              sudo docker run -d -p 5050:5050 ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness'
+      - name: Create SSH key file
+        run: echo "${{ secrets.MYFITNESS_PEM }}" > myfitness.pem
 
-      - name: Stop Docker container
-        run: docker stop $(docker ps -aq)
+      - name: Set permissions for SSH key
+        run: chmod 600 myfitness.pem
+
+      - name: SSH into EC2 and navigate to directory
+        run: ssh -o StrictHostKeyChecking=no -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} 'cd /home/ec2-user'
+
+      - name: List contents of the directory
+        run: ssh -o StrictHostKeyChecking=no -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} 'ls'
+
+      - name: Load Docker image
+        run: ssh -o StrictHostKeyChecking=no -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} 'sudo docker load -i myfitness.tar'
+
+      - name: Run Docker container
+        run: ssh -o StrictHostKeyChecking=no -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} 'sudo docker run -d -p 5050:5050 ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness'
+
+      - name: Get Docker container IDs
+        run: container_ids=$(sudo docker ps -aq)
+
+      - name: Stop Docker containers
+        run: sudo docker stop $container_ids
 
       - name: Stop EC2 instance
         run: aws ec2 stop-instances --instance-ids i-05196afce046ef6b7
+
