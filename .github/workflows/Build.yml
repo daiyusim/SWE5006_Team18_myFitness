@@ -113,6 +113,8 @@ jobs:
         run: |
           elastic_ip=$(aws ec2 describe-instances --instance-ids i-05196afce046ef6b7 --query 'Reservations[].Instances[].PublicIpAddress' --output text)
           echo "::set-output name=elastic_ip::$elastic_ip"
+      - name: Pull docker image
+        run: docker pull ${{ secrets.DOCKER_REPOSITORY_NAME }}
       - name: Tag Docker image
         run: docker tag ${{ secrets.DOCKER_REPOSITORY_NAME }} ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness
 
