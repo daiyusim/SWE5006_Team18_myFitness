@@ -148,17 +148,30 @@ jobs:
           echo "::set-output name=elastic_ip::$elastic_ip"
 
       - name: Create SSH key file
+        run: echo "${{ secrets.MYFITNESS_PEM }}" > myfitness.pem
+
+      - name: Set permissions for SSH key
+        run: chmod 600 myfitness.pem
+
+      - name: SSH into EC2 and navigate to directory
+        run: ssh -o StrictHostKeyChecking=no -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} 'cd /home/ec2-user'
+
+      - name: Load Docker image
+        run: ssh -o StrictHostKeyChecking=no -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} 'sudo docker load -i myfitness.tar'
+
+      - name: Run Docker container
+        run: ssh -o StrictHostKeyChecking=no -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} 'sudo docker run -d -p 5050:5050 ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness'
+
+      - name: Get Docker container IDs
+        id: get-container-ids
         run: |
-            echo "${{ secrets.MYFITNESS_PEM }}" > /tmp/myfitness.pem
-            chmod 600 /tmp/myfitness.pem
+         container_ids=$(ssh -o StrictHostKeyChecking=no -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} 'sudo docker ps -aq')
+         echo "::set-output name=container_ids::$container_ids"
 
-      - name: SSH into EC2, load Docker image, and run container
+      - name: Stop Docker containers
         run: |
-            ssh -o StrictHostKeyChecking=no -i /tmp/myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} '
-              cd /home/ec2-user &&
-              ls &&
-              sudo docker load -i myfitness.tar &&
-              sudo docker run -d -p 5050:5050 ${{ steps.get-public-ipv4.outputs.public_ipv4 }}/myfitness'
+         ssh -o StrictHostKeyChecking=no -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} 'sudo docker stop ${{ steps.get-container-ids.outputs.container_ids }}'
 
-
-
+      - name: Stop EC2 instance
+        run: aws ec2 stop-instances --instance-ids i-05196afce046ef6b7
+        
