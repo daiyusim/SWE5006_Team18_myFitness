@@ -168,10 +168,5 @@ jobs:
          container_ids=$(ssh -o StrictHostKeyChecking=no -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} 'sudo docker ps -aq')
          echo "::set-output name=container_ids::$container_ids"
 
-      - name: Stop Docker containers
-        run: |
-         ssh -o StrictHostKeyChecking=no -i myfitness.pem ec2-user@${{ steps.get-elastic-ip.outputs.elastic_ip }} 'sudo docker stop ${{ steps.get-container-ids.outputs.container_ids }}'
 
-      - name: Stop EC2 instance
-        run: aws ec2 stop-instances --instance-ids i-05196afce046ef6b7
         
