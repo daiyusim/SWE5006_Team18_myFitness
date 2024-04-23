@@ -7,9 +7,7 @@ import { isEmpty, isNull, trim } from "lodash";
 
 export const MainContainer = () => {
   const userId = useSelector(getAppUserIdSelector);
-  console.log("MainContainer" + userId);
   const loggedIn = !(isNull(userId) || isEmpty(trim(userId)));
-  console.log("MainContainer" + loggedIn);
   return (
     <Grid
       container
