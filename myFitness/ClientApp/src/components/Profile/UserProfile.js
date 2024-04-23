@@ -56,7 +56,6 @@ export const UserProfile = () => {
         return;
       }
       const data = await response.json();
-      console.log(data);
       if (data === null) {
         setProfileInfo(null);
       } else {

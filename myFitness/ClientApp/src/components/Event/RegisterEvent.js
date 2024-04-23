@@ -30,7 +30,6 @@ const RegisterEvent = ({ open, handleClose, eventId }) => {
                     return;
                 }
                 const eventData = await response.json();
-                console.log(eventData);
                 setEvent(eventData);
                 setLoading(false);
             } catch (error) {

@@ -55,7 +55,6 @@ const App = () => {
       const jwt = cookies.jwt;
       const jwtInfo = jwtDecode(jwt);
       dispatch(setUserId(jwtInfo));
-      console.log("logged in");
     } else {
       dispatch(clearUserId());
     }

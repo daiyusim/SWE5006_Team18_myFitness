@@ -41,7 +41,6 @@ const AttendanceForm = ({ open, handleClose, id }) => {
                     return;
                 }
                 const eventData = await response.json();
-                console.log(eventData)
                 setEvent(eventData);
                 setLoading(false);
             } catch (error) {
@@ -75,7 +74,6 @@ const AttendanceForm = ({ open, handleClose, id }) => {
                     isAttended: isAttended
                 };
             });
-            console.log(attendanceData);
             await axios.put('/api/registration', attendanceData);
             showSuccessBanner("Attendance Saved");
             handleClose();
