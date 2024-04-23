@@ -64,7 +64,6 @@ export const WorkoutMain = () => {
                 return [];
             }
             const events = await response.json();
-            console.log(events);
             const filteredEvents = events.filter(event => {
                 if (!userInterests?.includes(event.category)) {
                     return false;
