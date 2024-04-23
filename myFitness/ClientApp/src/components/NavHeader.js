@@ -49,7 +49,6 @@ const NavHeader = () => {
     setAnchorEl(null);
   };
   const handleLogout = () => {
-    console.log("Logging out...");
     handleClose();
     removeCookie("jwt");
   };

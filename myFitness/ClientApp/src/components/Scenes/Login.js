@@ -57,7 +57,6 @@ export const Login = () => {
     await loginPost({ email, password })
       .unwrap()
       .then((payload) => {
-        console.log(payload);
         setCookies("jwt", payload.token);
       })
       .catch(() => console.log("Unauthorized"));

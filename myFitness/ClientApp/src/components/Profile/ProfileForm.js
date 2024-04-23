@@ -27,7 +27,6 @@ const ProfileForm = ({ open, isEdit, handleClose, profileInfo }) => {
     const handleSubmit = async (event) => {
         setLoading(true)
         event.preventDefault(); 
-        console.log(profileData)
         try {
             if (isEdit === true) {
                 const response = await fetch(`/api/profile/${profileData.userId}`, {

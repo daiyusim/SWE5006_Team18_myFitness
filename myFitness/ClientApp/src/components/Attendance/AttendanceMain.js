@@ -30,7 +30,6 @@ export const AttendanceMain = () => {
         fetch("api/event")
             .then(r => r.json())
             .then(res => {
-                console.log(res);
                 const filteredEvents = res.filter(event => {
                     const isRegistered = event.registrations.some(registration => registration.userId === userId);
                     const createdByCurrentUser = event.createdBy === userId;
