@@ -48,7 +48,7 @@ export const WorkoutMain = () => {
             const filteredEvents = await fetchAndFilterEvents(data.profile?.interests, userId);
             setEvents(filteredEvents);
         } catch (error) {
-            console.error('Error fetching data:', error);
+/*            console.error('Error fetching data:', error);*/
             setLoading(false);
         }
     };
