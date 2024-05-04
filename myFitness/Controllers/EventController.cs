@@ -35,18 +35,57 @@ namespace myFitness.Controllers
         }
 
         // POST api/event
+        //[HttpPost]
+        //public async Task<ActionResult<Event>> Post(Event ev)
+        //{
+
+
+        //    // Convert the parsed datetime to UTC
+        //    ev.StartDateTime= ev.StartDateTime.ToUniversalTime();
+        //    ev.EndDateTime = ev.EndDateTime.ToUniversalTime();
+        //    await _eventServices.CreateAsync(ev);
+
+        //    return CreatedAtAction(nameof(Get), new {id = ev.Id}, ev);
+        //}
         [HttpPost]
-        public async Task<ActionResult<Event>> Post(Event ev)
+        public async Task<ActionResult<Event>> Post(EventInput model)
         {
+            try
+            {
+                // Input validation
+                if (model.StartDateTime >= model.EndDateTime)
+                {
+                    return BadRequest("StartDateTime must be before EndDateTime");
+                }
 
+                // Create event using builder
+                Event ev = Event.CreateBuilder()
+                    .WithTitle(model.Title)
+                    .WithDescription(model.Description)
+                    .WithStartDateTime(model.StartDateTime)
+                    .WithEndDateTime(model.EndDateTime)
+                    .WithCapacity(model.Capacity)
+                    .WithStatus(model.Status)
+                    .WithCategory(model.Category)
+                    .WithRegistrationEndDate(model.RegistrationEndDate)
+                    .WithCreatedBy(model.CreatedBy)
+                    .WithAddress(model.Address)
+                    .WithLat(model.Lat)
+                    .WithLong(model.Long)
+                    .Build();
 
-            // Convert the parsed datetime to UTC
-            ev.StartDateTime= ev.StartDateTime.ToUniversalTime();
-            ev.EndDateTime = ev.EndDateTime.ToUniversalTime();
-            await _eventServices.CreateAsync(ev);
+                // Pass the event to the service for further processing
+                await _eventServices.CreateAsync(ev);
 
-            return CreatedAtAction(nameof(Get), new {id = ev.Id}, ev);
+                return CreatedAtAction(nameof(Get), new { id = ev.Id }, ev);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return StatusCode(500, "Internal server error");
+            }
         }
+
 
         // PUT api/event/{id}
         [HttpPut("{id:length(24)}")]
