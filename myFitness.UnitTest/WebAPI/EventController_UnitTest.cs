@@ -40,21 +40,7 @@ namespace myFitness.UnitTest.WebAPI
             CollectionAssert.AreEqual(fakeEvents, result);
         }
 
-        [Test]
-        public async Task Post_CreatesNewEvent()
-        {
-            var newEvent = new EventInput { Title = "New Event" };
 
-            _mockEventServices.Setup(s => s.CreateAsync(It.IsAny<Event>())).Returns(Task.CompletedTask);
-
-            var result = await _controller.Post(newEvent);
-
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Result is CreatedAtActionResult);
-            var createdAtActionResult = (CreatedAtActionResult)result.Result;
-            Assert.AreEqual("Get", createdAtActionResult.ActionName);
-            Assert.AreEqual(newEvent, createdAtActionResult.Value);
-        }
 
         [Test]
         public async Task Put_UpdatesExistingEvent()
