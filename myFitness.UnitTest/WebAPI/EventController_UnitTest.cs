@@ -43,7 +43,7 @@ namespace myFitness.UnitTest.WebAPI
         [Test]
         public async Task Post_CreatesNewEvent()
         {
-            var newEvent = new Event { Id = "3", Title = "New Event" };
+            var newEvent = new EventInput { Title = "New Event" };
 
             _mockEventServices.Setup(s => s.CreateAsync(It.IsAny<Event>())).Returns(Task.CompletedTask);
 
@@ -53,7 +53,6 @@ namespace myFitness.UnitTest.WebAPI
             Assert.IsTrue(result.Result is CreatedAtActionResult);
             var createdAtActionResult = (CreatedAtActionResult)result.Result;
             Assert.AreEqual("Get", createdAtActionResult.ActionName);
-            Assert.AreEqual(newEvent.Id, createdAtActionResult.RouteValues["id"]);
             Assert.AreEqual(newEvent, createdAtActionResult.Value);
         }
 
