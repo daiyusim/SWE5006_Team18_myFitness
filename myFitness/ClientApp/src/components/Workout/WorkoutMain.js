@@ -13,6 +13,8 @@ import './Workout.css';
 import dayjs from 'dayjs';
 import { useSelector } from "react-redux";
 import { getAppUserIdSelector } from "../redux/selector";
+import { fetchAllRecentEvents, fetchSuggestedInterestBasedEvent } from './EventFilter'; 
+
 
 const categoryColors = {
     All: { backgroundColor: '#FFA500', color: 'white' },
@@ -34,8 +36,8 @@ export const WorkoutMain = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [showRegisterDialog, setShowRegisterDialog] = useState(false);
     const userId = useSelector(getAppUserIdSelector);
-    const fetchDashboardDetails = async () => {
 
+    const fetchDashboardDetails = async () => {
         try {
             const response = await fetch(`/api/registration/activities/${userId}`);
             if (!response.ok) {
@@ -44,41 +46,16 @@ export const WorkoutMain = () => {
             }
             const data = await response.json();
             setData(data);
-         
-            const filteredEvents = await fetchAndFilterEvents(data.profile?.interests, userId);
+
+            let filteredEvents;
+            if (data.profile?.interests === undefined) {
+                filteredEvents = await fetchAllRecentEvents(userId, setLoading, dayjs);
+            } else {
+                filteredEvents = await fetchSuggestedInterestBasedEvent(data.profile?.interests,userId, setLoading, dayjs);
+            }
             setEvents(filteredEvents);
         } catch (error) {
-/*            console.error('Error fetching data:', error);*/
             setLoading(false);
-        }
-    };
-
-    const fetchAndFilterEvents = async (userInterests, UserId) => {
-        const weekStartDate = dayjs().startOf('week').valueOf();
-        const weekEndDate = dayjs().endOf('week').valueOf();
-
-        try {
-            const response = await fetch("api/event");
-            if (!response.ok) {
-                setLoading(false);
-                return [];
-            }
-            const events = await response.json();
-            const filteredEvents = events.filter(event => {
-                if (!userInterests?.includes(event.category)) {
-                    return false;
-                }
-                const eventCreatedOn = dayjs(event.createdOn).valueOf();
-                const isWithinWeek = eventCreatedOn >= weekStartDate && eventCreatedOn <= weekEndDate;
-                const createdByCurrentUser = event.createdBy !== UserId;
-                return isWithinWeek && createdByCurrentUser && !event.registrations.some(registration => registration.userId === UserId);
-            }).slice(0, 5);
-
-
-            return filteredEvents;
-        } catch (error) {
-            console.error("Error fetching or filtering events:", error);
-            return [];
         }
     };
 
@@ -89,6 +66,7 @@ export const WorkoutMain = () => {
     const navigateEvent = () => {
         navigate(BaseRoutes.Event);
     }
+
     const getCategoryColor = (category) => {
         return categoryColors[category] || { backgroundColor: '#FFA500', color: 'white' };
     };
@@ -102,9 +80,9 @@ export const WorkoutMain = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
     const handleShowRegisterDialog = () => {
         setShowRegisterDialog(true);
-
     };
 
     const handleCloseRegisterDialog = () => {
